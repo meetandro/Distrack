@@ -1,50 +1,41 @@
 import { Box, Button, Center, Input, Stack } from "@chakra-ui/react";
 import { Field } from "../ui/field";
-import React, { useContext, useState } from "react";
+import { useContext } from "react";
 import { Collection } from "../../models/collection";
 import { CollectionContext } from "../../context/collections-context";
+import { useForm } from "react-hook-form";
 
 interface Props {
     onClose: () => void;
 }
 
 export const CollectionForm = ({ onClose }: Props) => {
-    const [collection, setCollection] = useState<Collection>({
-        name: '',
-        description: '',
-        id: 0,
-        createdDate: new Date(),
-        collectibles: [],
+    const { register, handleSubmit, reset } = useForm<Collection>({
+        defaultValues: {
+            id: 0,
+            name: '',
+            description: '',
+            createdDate: new Date(),
+            collectibles: [],
+        }
     });
     const { addCollection } = useContext(CollectionContext)
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setCollection({
-            ...collection,
-            [name]: value,
-        });
-    };
+    const onSubmit = async (data: Collection) => {
+        addCollection(data)
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        addCollection(collection)
-
-        setCollection({ name: '', description: '', id: 0, createdDate: new Date(), collectibles: [] });
+        reset();
         onClose();
     }
 
     return (
         <Box bg={"gray.800"} padding={5} rounded={5}>
-            <form onSubmit={handleSubmit} className="space-y-4 text-white">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-white">
                 <Stack>
                     <Field label="Name" required>
                         <Input
+                            {...register("name")}
                             type="text"
-                            name="name"
-                            value={collection.name}
-                            onChange={handleChange}
                             borderWidth={2}
                             borderColor={"gray.700"}
                             padding={2}
@@ -52,13 +43,12 @@ export const CollectionForm = ({ onClose }: Props) => {
                     </Field>
                     <Field label="Description">
                         <Input
+                            {...register("description")}
                             borderColor={"gray.700"}
                             borderWidth={2}
                             padding={2}
                             type="text"
-                            name="description"
-                            value={collection.description ?? ''}
-                            onChange={handleChange} />
+                        />
                     </Field>
                 </Stack>
                 <Center>

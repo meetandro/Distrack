@@ -6,19 +6,17 @@ import {
     Box,
     Button,
     Card,
-    Center,
-    Collapsible,
     GridItem,
     SimpleGrid,
     Text
 } from '@chakra-ui/react';
 import { TagForm } from './tag-form';
-import { CloseButton } from '../ui/close-button';
 import { TagContext } from '../../context/tag-context';
 
 export const Tags = () => {
     const { id } = useParams<{ id: string }>();
     const { tags, getTags, removeTag } = useContext(TagContext);
+    const [activeTag, setActiveTag] = useState<Tag | null | undefined>(undefined);
 
     useEffect(() => {
         const fetching = async () => {
@@ -26,14 +24,6 @@ export const Tags = () => {
         }
         fetching()
     }, [id]);
-
-    const [editingTag, setEditingTag] = useState<Tag | null>(null);
-    const [isCreatingTag, setIsCreatingTag] = useState(false);
-    const [isOpen, setIsOpen] = useState<boolean>(false);
-
-    const handleTagCreated = () => {
-        setIsCreatingTag(false);
-    };
 
     if (tags.length === 0) return <div>No tags found for this collection.</div>;
 
@@ -50,19 +40,7 @@ export const Tags = () => {
                             </Card.Body>
                             <Card.Footer>
                                 <Box className="space-x-2">
-                                    <Collapsible.Root open={isOpen}>
-                                        <Collapsible.Trigger onClick={() => { setIsOpen(true); setEditingTag(tag) }} bg='white'>Edit</Collapsible.Trigger>
-                                        <Collapsible.Content>
-                                            <Center position={'fixed'} inset={0}>
-                                                <Box bg={"white"} padding={5} rounded={5}>
-                                                    <CloseButton onClick={() => { setIsOpen(false); }} float={"right"} />
-                                                    {isOpen && (
-                                                        <TagForm existingTag={editingTag} onClose={() => { }} />
-                                                    )}
-                                                </Box>
-                                            </Center>
-                                        </Collapsible.Content>
-                                    </Collapsible.Root>
+                                    <Button bg={'green'} onClick={() => setActiveTag(tag)}>Edit</Button>
                                     <Button
                                         onClick={() => removeTag(tag.id)}
                                         className="px-4 py-2 bg-red-600 rounded-lg text-white hover:bg-red-500 transition-all"
@@ -82,14 +60,15 @@ export const Tags = () => {
             </SimpleGrid>
 
             <button
-                onClick={() => setIsCreatingTag(!isCreatingTag)}
+                onClick={() => setActiveTag(null)}
                 className="mt-4 bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-500 transition-all"
             >
-                {isCreatingTag ? 'Close Tag Form' : 'Add Tag'}
+                Create Tag
             </button>
-            {isCreatingTag && (
+
+            {activeTag !== undefined && (
                 <div className="mt-4">
-                    <TagForm onClose={handleTagCreated} />
+                    <TagForm existingTag={activeTag} onClose={() => setActiveTag(undefined)} />
                 </div>
             )}
         </Box>

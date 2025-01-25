@@ -11,7 +11,6 @@ import { Tag } from '../../models/tag';
 export const ModifyTags = () => {
     const { id, collectibleId } = useParams<{ id: string; collectibleId: string }>();
     const [selectedTags, setSelectedTags] = useState<number[]>([]);
-
     const { collectible } = useCollectible(Number(collectibleId));
     const { tags, getTags } = useContext(TagContext);
 
@@ -33,8 +32,7 @@ export const ModifyTags = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const response = await TagService.addTagsToCollectible(Number(collectibleId), selectedTags);
-        alert(String(response))
+        await TagService.addTagsToCollectible(Number(collectibleId), selectedTags);
     };
 
     return (

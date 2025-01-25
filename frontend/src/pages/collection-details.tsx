@@ -6,28 +6,17 @@ import { CollectionDetailsCard } from '../components/collection/collection-detai
 import { useContext, useState } from 'react';
 import { CollectionContext } from '../context/collections-context';
 import { CollectibleProvider } from '../context/collectible-context';
-import { useCollection } from '../hooks/use-collection';
 
 export const CollectionDetails = () => {
     const { id } = useParams<{ id: string }>();
-    const { collection, handleInputChange } = useCollection(Number(id))
-    const { collections, editCollection, removeCollection } = useContext(CollectionContext)
-
-    // find out which is faster
-    const trueCollections = collections.find(c => c.id == Number(id))
-    console.log(trueCollections)
-
+    const { collections } = useContext(CollectionContext)
+    const collection = collections.find(c => c.id == Number(id))
     const navigate = useNavigate();
 
     const [isOpen, setIsOpen] = useState(false);
     const toggleMenu = () => setIsOpen((prev) => !prev);
 
     if (!collection) return;
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        editCollection(collection)
-    };
 
     return (
         <Box>
@@ -48,12 +37,7 @@ export const CollectionDetails = () => {
                             Settings
                         </Box>
 
-                        <CollectionDetailsCard
-                            collection={collection}
-                            handleChange={handleInputChange}
-                            handleSubmit={handleSubmit}
-                            handleDelete={() => { removeCollection(collection.id); navigate('/') }}
-                        />
+                        <CollectionDetailsCard collection={collection} />
                     </Box>
                 )}
             </Box>

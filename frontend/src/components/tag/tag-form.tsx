@@ -1,9 +1,10 @@
 import { Box, Stack, Input, Button } from "@chakra-ui/react";
 import { Field } from "../ui/field";
-import React, { useContext, useState } from "react";
+import { useContext } from "react";
 import { useParams } from "react-router-dom";
 import { Tag } from "../../models/tag";
 import { TagContext } from "../../context/tag-context";
+import { useForm } from "react-hook-form";
 
 interface Props {
     existingTag?: Tag | null;
@@ -12,61 +13,52 @@ interface Props {
 
 export const TagForm = ({ existingTag, onClose }: Props) => {
     const { id } = useParams<{ id: string }>();
-    const [tag, setTag] = useState<Tag>({
-        id: existingTag?.id ?? 0,
-        name: existingTag?.name ?? '',
-        hex: existingTag?.hex ?? '#000000',
-        collectionId: Number(id),
-        collectibleIds: existingTag?.collectibleIds ?? []
-    });
-
+    const { register, handleSubmit, reset } = useForm<Tag>(
+        {
+            defaultValues: {
+                id: existingTag?.id ?? 0,
+                name: existingTag?.name ?? "",
+                hex: existingTag?.hex ?? "#000000",
+                collectionId: Number(id),
+                collectibleIds: existingTag?.collectibleIds ?? [],
+            },
+        }
+    );
     const { addTag, editTag } = useContext(TagContext)
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
+    const onSubmit = async (data: Tag) => {
+        if (existingTag) editTag(data)
+        else addTag(data)
 
-        setTag((prevTag) => ({
-            ...prevTag,
-            [name]: value,
-        }));
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (existingTag) {
-            editTag(tag)
-        }
-        else {
-            addTag(tag)
-        }
-        setTag({ id: 0, name: '', hex: '#000000', collectionId: Number(id), collectibleIds: [] });
+        reset();
         onClose();
     };
 
     return (
         <Box>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <Stack>
                     <Field label={"Name"} required>
                         <Input
+                            {...register("name")}
                             type='text'
-                            name="name"
-                            value={tag.name}
-                            onChange={handleChange}
                         />
                     </Field>
                     <Field label={"Color"}>
                         <Input
+                            {...register("hex")}
                             type='color'
-                            name='hex'
-                            value={tag.hex}
-                            onChange={handleChange}
                         />
                     </Field>
                 </Stack>
                 <Button type="submit">
                     Apply
+                </Button>
+                <Button
+                    onClick={() => onClose()}
+                    className="w-full py-2 bg-gray-600 rounded-lg text-white hover:bg-gray-500 transition-all mt-2"
+                >
+                    Cancel
                 </Button>
             </form>
         </Box>

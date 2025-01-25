@@ -1,26 +1,36 @@
+import { useForm } from 'react-hook-form';
 import { Collection } from '../../models/collection';
 import { formatDate } from '../../utils/format-date';
 import { Box, Button, Editable, Text } from '@chakra-ui/react';
+import { useContext } from 'react';
+import { CollectionContext } from '../../context/collections-context';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
     collection: Collection;
-    handleChange: any;
-    handleSubmit: any;
-    handleDelete: any;
 }
 
-export const CollectionDetailsCard = ({ collection, handleChange, handleSubmit, handleDelete }: Props) => {
+export const CollectionDetailsCard = ({ collection }: Props) => {
+    const { register, handleSubmit } = useForm<Collection>({
+        defaultValues: collection
+    });
     const formattedDate = formatDate(collection.createdDate);
+    const { editCollection, removeCollection } = useContext(CollectionContext)
+    const navigate = useNavigate();
+
+    const onSubmit = (data: Collection) => {
+        editCollection(data);
+    }
 
     return (
         <Box className="bg-gray-800 p-6 rounded-lg shadow-lg text-gray-100 mt-4">
-            <form onSubmit={handleSubmit}>
-                <Editable.Root _hover={{ color: 'black' }} name='name' value={collection.name} onChange={handleChange} defaultValue={collection.name}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <Editable.Root _hover={{ color: 'black' }} {...register("name")} defaultValue={collection.name}>
                     <Editable.Preview />
                     <Editable.Input />
                 </Editable.Root>
 
-                <Editable.Root _hover={{ color: 'black' }} name='description' value={collection.description} onChange={handleChange} defaultValue={collection.description}>
+                <Editable.Root _hover={{ color: 'black' }} {...register("description")} defaultValue={collection.description}>
                     <Editable.Preview />
                     <Editable.Input />
                 </Editable.Root>
@@ -29,7 +39,7 @@ export const CollectionDetailsCard = ({ collection, handleChange, handleSubmit, 
 
                 <Button type='submit' bg={'green'} padding={5} _hover={{ background: "green.700" }}>submit</Button>
             </form>
-            <button onClick={handleDelete} className="px-4 py-2 bg-red-600 rounded-lg hover:bg-red-500 transition-all">
+            <button onClick={() => { removeCollection(collection.id); navigate('/') }} className="px-4 py-2 bg-red-600 rounded-lg hover:bg-red-500 transition-all">
                 Delete
             </button>
         </Box>

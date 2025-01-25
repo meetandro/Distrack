@@ -6,9 +6,7 @@ import { CategoryContext } from '../../context/category-context';
 
 export const Categories = () => {
     const { categories, removeCategory } = useContext(CategoryContext);
-
-    const [showCreateCategory, setShowCreateCategory] = useState(false);
-    const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+    const [activeCategory, setActiveCategory] = useState<Category | null | undefined>(undefined);
 
     return (
         <Box>
@@ -20,21 +18,17 @@ export const Categories = () => {
                             <Text>{category.name}</Text>
                         </Box>
                         <Box width={'2/12'}>
-                            <Button bg={'green'} onClick={() => { setEditingCategory(category); }}>Edit</Button>
+                            <Button bg={'green'} onClick={() => setActiveCategory(category)}>Edit</Button>
                             <Button bg={'red'} float={'right'} onClick={() => removeCategory(category.id)}>Delete</Button>
                         </Box>
                     </GridItem>
                 ))}
             </SimpleGrid>
 
-            <Button onClick={() => setShowCreateCategory(true)}>Create a New Category</Button>
+            <Button onClick={() => setActiveCategory(null)}>Create a New Category</Button>
 
-            {showCreateCategory && (
-                <CategoryForm onClose={() => setShowCreateCategory(false)} />
-            )}
-
-            {editingCategory && (
-                <CategoryForm existingCategory={editingCategory} onClose={() => { setShowCreateCategory(false); setEditingCategory(null) }} />
+            {activeCategory !== undefined && (
+                <CategoryForm existingCategory={activeCategory} onClose={() => setActiveCategory(undefined)} />
             )}
         </Box>
     );
