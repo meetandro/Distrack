@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Collectibles } from '../components/collectible/collectibles';
 import { Box, Button } from '@chakra-ui/react';
 import { SlOptionsVertical } from 'react-icons/sl';
@@ -6,6 +6,7 @@ import { CollectionDetailsCard } from '../components/collection/collection-detai
 import { useContext, useState } from 'react';
 import { CollectionContext } from '../context/collections-context';
 import { CollectibleProvider } from '../context/collectible-context';
+import { BsPlusSquare } from 'react-icons/bs';
 
 export const CollectionDetails = () => {
     const { id } = useParams<{ id: string }>();
@@ -27,6 +28,11 @@ export const CollectionDetails = () => {
                 >
                     <SlOptionsVertical />
                 </Button>
+                <Link to={`/collections/${collection.id}/collectibles/new`}
+                    className="text-white bg-gray-500 hover:bg-gray-600 p-3 rounded-lg top-3 left-32 fixed"
+                >
+                    <BsPlusSquare />
+                </Link>
 
                 {isOpen && (
                     <Box className="text-white bg-gray-500 p-2 rounded-lg top-14 left-4 fixed z-10">

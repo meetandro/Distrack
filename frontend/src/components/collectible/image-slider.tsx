@@ -1,3 +1,4 @@
+import { Box, Button, Image } from "@chakra-ui/react";
 import { useState } from "react";
 
 export const ImageSlider = ({ images }: { images: { url: string }[] }) => {
@@ -12,28 +13,30 @@ export const ImageSlider = ({ images }: { images: { url: string }[] }) => {
     };
 
     return (
-        <div className="relative">
-            <img
+        <Box className="relative">
+            <Image
                 src={`https://localhost:5001${images[currentIndex]}`}
                 alt={`Image ${currentIndex + 1}`}
+                height={300}
+                width={500}
                 className="w-full h-60 object-cover rounded-lg"
             />
             {images.length > 1 && (
                 <>
-                    <button
+                    <Button
                         onClick={handlePrev}
                         className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-600 text-white p-2 rounded-full shadow-lg hover:bg-gray-500"
                     >
                         ❮
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         onClick={handleNext}
                         className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-600 text-white p-2 rounded-full shadow-lg hover:bg-gray-500"
                     >
                         ❯
-                    </button>
+                    </Button>
                 </>
             )}
-        </div>
+        </Box>
     );
 };

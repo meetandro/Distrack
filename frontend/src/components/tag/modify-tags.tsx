@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import TagService from '../../services/tag-service';
-import { useCollectible } from '../../hooks/use-collectibles';
+import { useCollectible } from '../../hooks/use-collectible';
 import { Box, Button, Center, DrawerActionTrigger, DrawerBackdrop, DrawerContent, DrawerHeader, DrawerRoot, DrawerTrigger, SimpleGrid } from '@chakra-ui/react';
 import { CloseButton } from '../ui/close-button';
 import { Checkbox } from '../ui/checkbox';

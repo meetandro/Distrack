@@ -39,9 +39,12 @@ export const CollectionDetailsCard = ({ collection }: Props) => {
 
                 <Button type='submit' bg={'green'} padding={5} _hover={{ background: "green.700" }}>submit</Button>
             </form>
-            <button onClick={() => { removeCollection(collection.id); navigate('/') }} className="px-4 py-2 bg-red-600 rounded-lg hover:bg-red-500 transition-all">
+            <Button
+                onClick={() => { removeCollection(collection.id); navigate('/') }}
+                className="px-4 py-2 bg-red-600 rounded-lg hover:bg-red-500 transition-all"
+            >
                 Delete
-            </button>
+            </Button>
         </Box>
     );
 };

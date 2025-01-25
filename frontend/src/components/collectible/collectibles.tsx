@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import Filter from './filter';
 import Sorting from './sorting';
 import { CiFilter } from "react-icons/ci";
-import { useCollectibles } from '../../hooks/use-collectible';
+import { useCollectibles } from '../../hooks/use-collectibles';
 import { useState } from 'react';
 import { CollectibleGrid } from './collectible-grid';
 import {
@@ -22,10 +22,9 @@ import { PaginationNextTrigger, PaginationPageText, PaginationPrevTrigger, Pagin
 
 export const Collectibles = () => {
     const { id } = useParams<{ id: string }>();
-
     const [page, setPage] = useState<number>(1);
     const pageSize = 5;
-    const { collectibles, tempFilters, loading, error, totalCount, updateFilter, clearFilter, applyFilters, handleSortChange, handleSortOrderToggle } = useCollectibles(Number(id), page, pageSize);
+    const { collectibles, loading, error, totalCount, tempFilters, updateFilter, clearFilter, applyFilters, handleSortChange, handleSortOrderToggle } = useCollectibles(Number(id), page, pageSize);
 
     if (loading) return <div>Loading...</div>
     if (error) return <div>{error}</div>

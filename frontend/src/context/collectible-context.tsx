@@ -2,6 +2,7 @@ import React, { createContext, useReducer } from 'react';
 import collectibleservice from '../services/collectible-service';
 import collectibleReducer from './collectible-reducer';
 import CollectibleService from '../services/collectible-service';
+import { CreateCollectibleRequest } from '../models/collectible';
 
 const initialState = {
     collectibles: [],
@@ -15,7 +16,7 @@ export const CollectibleContext = createContext(initialState);
 export const CollectibleProvider = ({ children }) => {
     const [state, dispatch] = useReducer(collectibleReducer, initialState);
 
-    async function addCollectible(collectible) {
+    async function addCollectible(collectible: CreateCollectibleRequest) {
         const formData = new FormData();
         formData.append('name', collectible.name);
         formData.append('description', collectible.description);
@@ -23,7 +24,10 @@ export const CollectibleProvider = ({ children }) => {
         formData.append('currency', collectible.currency);
         formData.append('value', collectible.value.toString());
         formData.append('condition', collectible.condition.toString());
-        formData.append('acquiredDate', collectible.acquiredDate.toISOString());
+
+        const date = new Date(collectible.acquiredDate);
+        formData.append('acquiredDate', date.toISOString());
+
         formData.append('isPatented', collectible.isPatented.toString());
         formData.append('collectionId', collectible.collectionId.toString());
         formData.append('categoryId', collectible.categoryId.toString());

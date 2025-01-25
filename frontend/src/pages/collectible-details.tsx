@@ -5,8 +5,8 @@ import { ColorDisplay } from '../components/common/ColorDisplay';
 import { ConditionDisplay } from '../components/common/ConditionDisplay';
 import { CategoryDisplay } from '../components/common/CategoryDisplay';
 import { ImagesDisplay } from '../components/common/ImagesDisplay';
-import { useCollectible } from '../hooks/use-collectibles';
-import { Input, Stack } from '@chakra-ui/react';
+import { useCollectible } from '../hooks/use-collectible';
+import { Box, Button, Input, Stack } from '@chakra-ui/react';
 import { Field } from '../components/ui/field';
 import { FaRegEdit } from 'react-icons/fa';
 import { TagProvider } from '../context/tag-context';
@@ -21,24 +21,25 @@ export const CollectibleDetails = () => {
     const { editCollectible, removeCollectible } = useContext(CollectibleContext);
     const [isEditing, setIsEditing] = useState(false);
 
+    const acquiredDate = collectible?.acquiredDate ? new Date(collectible.acquiredDate) : new Date();
+    const formattedDate = acquiredDate.toISOString();
+
     if (!collectible) return <p>Loading...</p>;
 
     return (
-        <div className="flex items-center justify-center min-h-screen">
-            <div className="w-1/2 mx-auto bg-gray-800 p-6 rounded-lg shadow-lg text-gray-100 my-10">
-                <h2 className="text-2xl font-bold mb-6 text-center">Collectible Details</h2>
-
-                <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                        <button
+        <Box className="flex items-center justify-center min-h-screen">
+            <Box className="w-1/2 mx-auto bg-gray-800 p-6 rounded-lg shadow-lg text-gray-100 my-10">
+                <Box className="space-y-4">
+                    <Box className="flex justify-between items-center">
+                        <Button
                             onClick={() => setIsEditing(!isEditing)}
                             className="text-blue-500 hover:underline flex items-center"
                         >
                             {isEditing ? <><FaRegEdit /> Cancel</> : <FaRegEdit />}
-                        </button>
-                    </div>
+                        </Button>
+                    </Box>
 
-                    <div className="space-y-4">
+                    <Box className="space-y-4">
                         <Stack>
                             <Field label={"Name"}>
                                 <Input
@@ -96,6 +97,20 @@ export const CollectibleDetails = () => {
                                 />
                             </Field>
 
+                            <Field label="Acquired Date">
+                                <Input
+                                    _disabled={{
+                                        color: 'white',
+                                        opacity: 1,
+                                    }}
+                                    type="date"
+                                    name="acquiredDate"
+                                    value={formattedDate.substring(0, 10)}
+                                    onChange={handleInputChange}
+                                    disabled={!isEditing}
+                                />
+                            </Field>
+
                             <ConditionDisplay editing={isEditing} collectible={collectible} handleInputChange={handleInputChange} />
 
                             <ColorDisplay editing={isEditing} collectible={collectible} handleInputChange={handleInputChange} />
@@ -106,21 +121,21 @@ export const CollectibleDetails = () => {
                         </Stack>
 
                         {isEditing && (
-                            <button
+                            <Button
                                 onClick={() => { editCollectible(collectible, images); setIsEditing(false); }}
                                 className="w-full py-2 mt-6 bg-green-600 rounded-lg hover:bg-green-500 transition-all flex items-center justify-center"
                             >
                                 Save Changes
-                            </button>
+                            </Button>
                         )}
-                    </div>
+                    </Box>
 
-                    <button
+                    <Button
                         onClick={() => { removeCollectible(collectible.id); navigate(`/collections/${collectible?.collectionId}`); }}
                         className="w-full py-2 mt-6 bg-red-600 rounded-lg hover:bg-red-500 transition-all flex items-center justify-center"
                     >
                         Delete Collectible
-                    </button>
+                    </Button>
 
                     <TagProvider>
                         <ModifyTags />
@@ -129,8 +144,8 @@ export const CollectibleDetails = () => {
                     <Link to={`/collections/${collectible.collectionId}`} className="w-full py-2 mt-6 bg-cyan-600 rounded-lg hover:bg-cyan-500 transition-all flex items-center justify-center">
                         Back to collection
                     </Link>
-                </div>
-            </div>
-        </div>
+                </Box>
+            </Box>
+        </Box>
     );
 };

@@ -1,64 +1,62 @@
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { CreateCollectibleRequest, GetCollectibleByIdResponse } from "../models/collectible";
 import CollectibleService from "../services/collectible-service";
-import { GetAllCollectiblesResponse } from "../models/collectible";
+import { useNavigate } from "react-router-dom";
 
-export const useCollectibles = (collectionId: number, page: number, pageSize: number) => {
-    const [collectibles, setCollectibles] = useState<GetAllCollectiblesResponse[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-    const [totalCount, setTotalCount] = useState<number>(0);
-    const [tempFilters, setTempFilters] = useState({
-        searchQuery: '',
-        colors: [],
-        currency: '',
-        minValue: null,
-        maxValue: null,
-        conditions: [],
-        acquiredFrom: null,
-        acquiredTo: null,
-        isPatented: null,
-        sortBy: '',
-        sortOrder: 'asc',
-    });
-    const [filters, setFilters] = useState(tempFilters);
+export const useCollectible = (id?: number) => {
+    const [collectible, setCollectible] = useState<GetCollectibleByIdResponse>();
+    const [images, setImages] = useState<(File | string)[]>([]); // mixed types: both URLs and File objects
+    const [error, setError] = useState<string>('');
+    const [success, setSuccess] = useState<string>('');
+    const navigate = useNavigate();
+
+    const fetchCollectible = useCallback(async () => {
+        try {
+            const data = await CollectibleService.getById(Number(id));
+            setCollectible(data);
+
+            // Initialize images with the current image URLs from the collectible
+            setImages(data.imageUrls);  // Just use the image URLs directly
+        } catch (err) {
+            console.error('Error fetching collectible:', err);
+            setError('Failed to fetch collectible details.');
+        }
+    }, [id]);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        if (collectible) {
+            setCollectible({ ...collectible, [name]: name === 'categoryId' ? Number(value) : value });
+        }
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setImages((prevImages) => [
+                ...prevImages,  // Keep existing images (URLs)
+                ...Array.from(e.target.files || []),  // Add newly selected files as File objects
+            ]);
+        }
+    };
+
+    const handleRemoveImage = (index: number) => {
+        // Remove image by index
+        setImages((prevImages) => prevImages.filter((_, i) => i !== index));
+    };
 
     useEffect(() => {
-        (async () => {
-            try {
-                setLoading(true);
-                const data = await CollectibleService.getAll(collectionId ?? 0, page, pageSize, filters);
-                setCollectibles(data.items);
-                setTotalCount(data.totalCount);
-            } catch {
-                setError('Failed to fetch collectibles. Please try again later.');
-            } finally {
-                setLoading(false);
-            }
-        })();
-    }, [collectionId, page, pageSize, filters]);
+        if (id) {
+            fetchCollectible();
+        }
+    }, [id, fetchCollectible]);
 
-    const updateFilter = (key: string, value: unknown) => {
-        setTempFilters((prev) => ({ ...prev, [key]: value }));
+    return {
+        collectible,
+        images,
+        error,
+        success,
+        handleInputChange,
+        handleFileChange,
+        handleRemoveImage,
     };
-
-    const clearFilter = (key: string) => {
-        const clearedFilters = { ...tempFilters, [key]: key === 'colors' || key === 'conditions' ? [] : null };
-        setTempFilters(clearedFilters);
-    };
-
-    const applyFilters = () => {
-        setFilters(tempFilters);
-    };
-
-    const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedSortBy = e.target.value;
-        updateFilter('sortBy', selectedSortBy);
-    };
-
-    const handleSortOrderToggle = () => {
-        const newSortOrder = tempFilters.sortOrder === 'asc' ? 'desc' : 'asc';
-        updateFilter('sortOrder', newSortOrder);
-    };
-
-    return { collectibles, tempFilters, loading, error, totalCount, updateFilter, clearFilter, applyFilters, handleSortChange, handleSortOrderToggle }
-}
+};

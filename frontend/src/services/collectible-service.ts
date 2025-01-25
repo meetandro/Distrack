@@ -27,9 +27,9 @@ export default abstract class CollectibleService {
             throw error;
         }
     }
-      
 
-    static async getById (id: number): Promise<GetCollectibleByIdResponse> {
+
+    static async getById(id: number): Promise<GetCollectibleByIdResponse> {
         try {
             const response = await api.get(`/collectibles/${id}`);
             return response.data;
@@ -39,13 +39,13 @@ export default abstract class CollectibleService {
         }
     }
 
-    static async create (itemData: FormData){
+    static async create(itemData: FormData) {
         try {
             const response = await api.post('/collectibles', itemData, {
-                            headers: {
-                                'Content-Type': 'multipart/form-data',
-                            },
-                        });
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
             return response.data;
         } catch (error) {
             console.error('Error creating item:', error);
@@ -72,23 +72,26 @@ export default abstract class CollectibleService {
         formData.append('currency', itemData.currency ?? '');
         formData.append('value', itemData.value?.toString() ?? '');
         formData.append('condition', itemData.condition?.toString() ?? '');
-        formData.append('acquiredDate', itemData.acquiredDate instanceof Date ? itemData.acquiredDate.toISOString() : new Date().toISOString());
+
+        const date = new Date(itemData.acquiredDate);
+        formData.append('acquiredDate', date.toISOString());
+
         formData.append('isPatented', itemData.isPatented?.toString() ?? '');
         formData.append('collectionId', itemData.collectionId.toString());
         formData.append('categoryId', itemData.categoryId.toString());
-    
+
         // Add existing images (URLs) to formData under 'existingImages'
         if (itemData.existingImages && itemData.existingImages.length > 0) {
             itemData.existingImages.forEach((imageUrl) => formData.append('existingImages', imageUrl));
         }
 
         formData.append('existingImages', '');
-    
+
         // Add new image files to formData under 'newImages'
         if (itemData.newImages && itemData.newImages.length > 0) {
             itemData.newImages.forEach((image) => formData.append('newImages', image));
         }
-    
+
         try {
             const res = await api.put(`/collectibles/${id}`, formData, {
                 headers: {
@@ -99,8 +102,8 @@ export default abstract class CollectibleService {
         } catch (err) {
             console.error(err);
         }
-    
+
         throw new Error('Failed to update collectible');
     }
-    
+
 }
