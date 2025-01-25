@@ -40,7 +40,7 @@ export const CollectibleProvider = ({ children }) => {
         });
     }
 
-    async function editCollectible(collectible: Collectible, images) {
+    async function editCollectible(collectible, images) {
         if (!collectible) return;
 
         const existingUrls = images.filter((image) => typeof image === 'string') as string[];

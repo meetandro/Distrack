@@ -18,7 +18,7 @@ import {
     IconButton
 } from '@chakra-ui/react';
 import { CloseButton } from '../ui/close-button';
-import { PaginationNextTrigger, PaginationPageText, PaginationPrevTrigger, PaginationRoot } from '../ui/pagination';
+import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from '../ui/pagination';
 
 export const Collectibles = () => {
     const { id } = useParams<{ id: string }>();
@@ -68,11 +68,17 @@ export const Collectibles = () => {
             <CollectibleGrid collectionId={Number(id)} collectibles={collectibles} />
 
             <Center>
-                <PaginationRoot count={totalCount} pageSize={pageSize} defaultPage={page}>
+                <PaginationRoot
+                    count={totalCount}
+                    pageSize={pageSize}
+                    page={page}
+                    siblingCount={5}
+                    onPageChange={(e) => setPage(e.page)}
+                >
                     <HStack>
-                        <PaginationPrevTrigger onClick={() => setPage(page - 1)} />
-                        <PaginationPageText />
-                        <PaginationNextTrigger onClick={() => setPage(page + 1)} />
+                        <PaginationPrevTrigger />
+                        <PaginationItems />
+                        <PaginationNextTrigger />
                     </HStack>
                 </PaginationRoot>
             </Center>
