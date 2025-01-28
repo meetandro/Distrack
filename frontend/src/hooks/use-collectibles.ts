@@ -46,6 +46,24 @@ export const useCollectibles = (collectionId: number, page: number, pageSize: nu
         setTempFilters(clearedFilters);
     };
 
+    const clearFilters = () => {
+        setTempFilters(
+            {
+                searchQuery: '',
+                colors: [],
+                currency: '',
+                minValue: null,
+                maxValue: null,
+                conditions: [],
+                acquiredFrom: null,
+                acquiredTo: null,
+                isPatented: null,
+                sortBy: '',
+                sortOrder: 'asc',
+            }
+        )
+    }
+
     const applyFilters = () => {
         setFilters(tempFilters);
     };
@@ -60,5 +78,5 @@ export const useCollectibles = (collectionId: number, page: number, pageSize: nu
         updateFilter('sortOrder', newSortOrder);
     };
 
-    return { collectibles, tempFilters, loading, error, totalCount, updateFilter, clearFilter, applyFilters, handleSortChange, handleSortOrderToggle }
+    return { collectibles, tempFilters, loading, error, totalCount, updateFilter, clearFilter, clearFilters, applyFilters, handleSortChange, handleSortOrderToggle }
 }

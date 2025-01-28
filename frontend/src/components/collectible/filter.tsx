@@ -4,11 +4,14 @@ interface Props {
     tempFilters: any;
     updateFilter: (key: string, value: any) => void;
     clearFilter: (key: string) => void;
+    clearFilters: () => void;
     applyFilters: () => void;
+    handleSortChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+    handleSortOrderToggle: () => void;
     setPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const Filter = ({ tempFilters, updateFilter, clearFilter, applyFilters, setPage }: Props) => {
+const Filter = ({ tempFilters, updateFilter, clearFilter, clearFilters, applyFilters, handleSortChange, handleSortOrderToggle, setPage }: Props) => {
     const toggleSelection = (key: string, value: string) => {
         const currentSelection = tempFilters[key];
         if (currentSelection.includes(value)) {
@@ -33,10 +36,10 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, applyFilters, setPage 
                 <Box className="flex flex-col">
                     <input
                         type="text"
-                        placeholder="Search..."
+                        placeholder="Search"
                         value={tempFilters.searchQuery}
                         onChange={(e) => updateFilter('searchQuery', e.target.value)}
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2"
                     />
                     {tempFilters.searchQuery && (
                         <button
@@ -51,10 +54,10 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, applyFilters, setPage 
                 <Box className="flex flex-col">
                     <input
                         type="text"
-                        placeholder="Currency (e.g., USD)"
+                        placeholder="Currency"
                         value={tempFilters.currency}
                         onChange={(e) => updateFilter('currency', e.target.value)}
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2"
                     />
                     {tempFilters.currency && (
                         <Button
@@ -66,98 +69,24 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, applyFilters, setPage 
                     )}
                 </Box>
 
-                <Box className="flex flex-col space-y-2">
-                    <Text className="text-gray-200">Colors</Text>
-                    <Box className="flex flex-wrap gap-2">
-                        {['Black', 'Blue', 'Bronze', 'Crimson', 'Cyan', 'DarkGray', 'ForestGreen', 'Gold', 'Gray', 'Green', 'Lime', 'Orange', 'Pink', 'Purple', 'Red', 'Silver', 'Violet', 'Wheat', 'White', 'Yellow'].map((color) => (
-                            <Box
-                                key={color}
-                                onClick={() => toggleSelection('colors', color)}
-                                className={`cursor-pointer px-3 py-1 rounded-full text-sm ${tempFilters.colors.includes(color)
-                                    ? 'bg-blue-600 text-white'
-                                    : 'bg-gray-200 text-gray-900'
-                                    } hover:bg-blue-500 hover:text-white`}
-                            >
-                                {color}
-                            </Box>
-                        ))}
-                    </Box>
-                    {tempFilters.colors.length > 0 && (
-                        <Button
-                            onClick={() => clearFilter('colors')}
-                            className="text-xs text-red-500 mt-2"
-                        >
-                            Clear Colors
-                        </Button>
-                    )}
-                </Box>
-
-                <Box className="flex flex-col space-y-2">
-                    <Text className="text-gray-200">Conditions</Text>
-                    <Box className="flex flex-wrap gap-2">
-                        {['Mint', 'VeryGood', 'Good', 'Acceptable', 'Damaged'].map((condition) => (
-                            <Box
-                                key={condition}
-                                onClick={() => toggleSelection('conditions', condition)}
-                                className={`cursor-pointer px-3 py-1 rounded-full text-sm ${tempFilters.conditions.includes(condition)
-                                    ? 'bg-blue-600 text-white'
-                                    : 'bg-gray-200 text-gray-900'
-                                    } hover:bg-blue-500 hover:text-white`}
-                            >
-                                {condition}
-                            </Box>
-                        ))}
-                    </Box>
-                    {tempFilters.conditions.length > 0 && (
-                        <Button
-                            onClick={() => clearFilter('conditions')}
-                            className="text-xs text-red-500 mt-2"
-                        >
-                            Clear Conditions
-                        </Button>
-                    )}
-                </Box>
-
-                <Box className="flex flex-col space-y-2">
-                    <Text className="text-gray-200">Is Patented</Text>
-                    <Box className="flex gap-4">
-                        <Box
-                            onClick={() => toggleBooleanFilter('isPatented', true)}
-                            className={`cursor-pointer px-3 py-1 rounded-full text-sm ${tempFilters.isPatented === true
-                                ? 'bg-blue-600 text-white'
-                                : 'bg-gray-200 text-gray-900'
-                                } hover:bg-blue-500 hover:text-white`}
-                        >
-                            Yes
-                        </Box>
-                        <Box
-                            onClick={() => toggleBooleanFilter('isPatented', false)}
-                            className={`cursor-pointer px-3 py-1 rounded-full text-sm ${tempFilters.isPatented === false
-                                ? 'bg-blue-600 text-white'
-                                : 'bg-gray-200 text-gray-900'
-                                } hover:bg-blue-500 hover:text-white`}
-                        >
-                            No
-                        </Box>
-                    </Box>
-                    {tempFilters.isPatented !== null && (
-                        <Button
-                            onClick={() => clearFilter('isPatented')}
-                            className="text-xs text-red-500 mt-2"
-                        >
-                            Clear Is Patented
-                        </Button>
-                    )}
-                </Box>
-
                 <Box className="flex flex-col">
-                    <input
-                        type="number"
-                        placeholder="Min Value"
-                        value={tempFilters.minValue || ''}
-                        onChange={(e) => updateFilter('minValue', Number(e.target.value))}
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                    />
+                    <Text className="text-gray-200">Value</Text>
+                    <Box className="w-full flex gap-2">
+                        <input
+                            type="number"
+                            placeholder="Min"
+                            value={tempFilters.minValue || ''}
+                            onChange={(e) => updateFilter('minValue', Number(e.target.value))}
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2 w-1/4"
+                        />
+                        <input
+                            type="number"
+                            placeholder="Max"
+                            value={tempFilters.maxValue || ''}
+                            onChange={(e) => updateFilter('maxValue', Number(e.target.value))}
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2 w-1/4"
+                        />
+                    </Box>
                     {tempFilters.minValue !== null && (
                         <Button
                             onClick={() => clearFilter('minValue')}
@@ -166,16 +95,6 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, applyFilters, setPage 
                             Clear Min Value
                         </Button>
                     )}
-                </Box>
-
-                <Box className="flex flex-col">
-                    <input
-                        type="number"
-                        placeholder="Max Value"
-                        value={tempFilters.maxValue || ''}
-                        onChange={(e) => updateFilter('maxValue', Number(e.target.value))}
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                    />
                     {tempFilters.maxValue !== null && (
                         <Button
                             onClick={() => clearFilter('maxValue')}
@@ -187,12 +106,21 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, applyFilters, setPage 
                 </Box>
 
                 <Box className="flex flex-col">
-                    <input
-                        type="date"
-                        value={tempFilters.acquiredFrom || ''}
-                        onChange={(e) => updateFilter('acquiredFrom', e.target.value)}
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                    />
+                    <Text className="text-gray-200">Acquired Date</Text>
+                    <Box className="flex gap-3">
+                        <input
+                            type="date"
+                            value={tempFilters.acquiredFrom || ''}
+                            onChange={(e) => updateFilter('acquiredFrom', e.target.value)}
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2 w-1/2"
+                        />
+                        <input
+                            type="date"
+                            value={tempFilters.acquiredTo || ''}
+                            onChange={(e) => updateFilter('acquiredTo', e.target.value)}
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2 w-1/2"
+                        />
+                    </Box>
                     {tempFilters.acquiredFrom && (
                         <Button
                             onClick={() => clearFilter('acquiredFrom')}
@@ -201,15 +129,6 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, applyFilters, setPage 
                             Clear Acquired Date From
                         </Button>
                     )}
-                </Box>
-
-                <Box className="flex flex-col">
-                    <input
-                        type="date"
-                        value={tempFilters.acquiredTo || ''}
-                        onChange={(e) => updateFilter('acquiredTo', e.target.value)}
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                    />
                     {tempFilters.acquiredTo && (
                         <Button
                             onClick={() => clearFilter('acquiredTo')}
@@ -221,13 +140,120 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, applyFilters, setPage 
                 </Box>
             </Box>
 
+
+
+            <Box className="flex flex-col space-y-2">
+                <Text className="text-gray-200">Colors</Text>
+                <Box className="flex flex-wrap gap-2">
+                    {['Black', 'Blue', 'Bronze', 'Crimson', 'Cyan', 'DarkGray', 'ForestGreen', 'Gold', 'Gray', 'Green', 'Lime', 'Orange', 'Pink', 'Purple', 'Red', 'Silver', 'Violet', 'Wheat', 'White', 'Yellow'].map((color) => (
+                        <Box
+                            key={color}
+                            onClick={() => toggleSelection('colors', color)}
+                            className={`cursor-pointer px-3 py-1 rounded-lg text-sm ${tempFilters.colors.includes(color)
+                                ? 'bg-gray-800 text-white'
+                                : 'bg-gray-600 text-white'
+                                } hover:bg-gray-700 hover:text-white`}
+                        >
+                            {color}
+                        </Box>
+                    ))}
+                </Box>
+                {tempFilters.colors.length > 0 && (
+                    <Button
+                        onClick={() => clearFilter('colors')}
+                        className="text-xs text-red-500 mt-2"
+                    >
+                        Clear Colors
+                    </Button>
+                )}
+            </Box>
+
+            <Box className="flex flex-col space-y-2">
+                <Text className="text-gray-200">Conditions</Text>
+                <Box className="flex flex-wrap gap-2">
+                    {['Mint', 'VeryGood', 'Good', 'Acceptable', 'Damaged'].map((condition) => (
+                        <Box
+                            key={condition}
+                            onClick={() => toggleSelection('conditions', condition)}
+                            className={`cursor-pointer px-3 py-1 rounded-lg text-sm ${tempFilters.conditions.includes(condition)
+                                ? 'bg-gray-800 text-white'
+                                : 'bg-gray-600 text-white'
+                                } hover:bg-gray-700 hover:text-white`}
+                        >
+                            {condition}
+                        </Box>
+                    ))}
+                </Box>
+                {tempFilters.conditions.length > 0 && (
+                    <Button
+                        onClick={() => clearFilter('conditions')}
+                        className="text-xs text-red-500 mt-2"
+                    >
+                        Clear Conditions
+                    </Button>
+                )}
+            </Box>
+
+            <Box className="flex flex-col space-y-2">
+                <Text className="text-gray-200">Patented</Text>
+                <Box className="flex gap-2">
+                    <Box
+                        onClick={() => toggleBooleanFilter('isPatented', true)}
+                        className={`cursor-pointer px-3 py-1 rounded-lg text-sm ${tempFilters.isPatented === true
+                            ? 'bg-gray-800 text-white'
+                            : 'bg-gray-600 text-white'
+                            } hover:bg-gray-700 hover:text-white`}
+                    >
+                        Patented
+                    </Box>
+                    <Box
+                        onClick={() => toggleBooleanFilter('isPatented', false)}
+                        className={`cursor-pointer px-3 py-1 rounded-lg text-sm ${tempFilters.isPatented === false
+                            ? 'bg-gray-800 text-white'
+                            : 'bg-gray-600 text-white'
+                            } hover:bg-gray-700 hover:text-white`}
+                    >
+                        Not Patented
+                    </Box>
+                </Box>
+                {tempFilters.isPatented !== null && (
+                    <Button
+                        onClick={() => clearFilter('isPatented')}
+                        className="text-xs text-red-500 mt-2"
+                    >
+                        Clear Patented
+                    </Button>
+                )}
+            </Box>
+
+            <Box className="flex flex-col space-y-4 mt-4">
+                <select
+                    value={tempFilters.sortBy}
+                    onChange={handleSortChange}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white p-3"
+                >
+                    <option value="">Sort By</option>
+                    <option value="name">Name</option>
+                    <option value="value">Value</option>
+                    <option value="acquireddate">Acquired Date</option>
+                </select>
+
+                <Button
+                    onClick={handleSortOrderToggle}
+                    className="py-2 px-4 text-sm font-medium bg-zinc-700 text-white rounded-lg hover:bg-zinc-800"
+                >
+                    Order ({tempFilters.sortOrder.toUpperCase()})
+                </Button>
+            </Box>
+
             <Button
                 onClick={() => { applyFilters(); setPage(1); }}
-                className="py-2 px-4 mt-4 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                className="py-2 px-4 mt-4 bg-zinc-700 text-white rounded-lg hover:bg-zinc-800"
             >
-                Apply Filters
+                Apply
             </Button>
-        </Box>
+            <Button className="bg-red-500 py-2 px-4 text-white rounded-lg hover:bg-red-600 ml-2" onClick={() => clearFilters()}>Clear All</Button>
+        </Box >
     );
 };
 

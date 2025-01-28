@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ModifyTags } from '../components/tag/modify-tags';
 import { useCollectible } from '../hooks/use-collectible';
@@ -16,9 +16,16 @@ export const CollectibleDetails = () => {
     const navigate = useNavigate();
     const { collectible, images, handleFileChange, handleRemoveImage } = useCollectible(Number(collectibleId));
     const { categories } = useContext(CategoryContext)
+    const [checked, setChecked] = useState(false)
     const { editCollectible, removeCollectible } = useContext(CollectibleContext);
     const [isEditing, setIsEditing] = useState(false);
     const { register, handleSubmit } = useForm();
+
+    useEffect(() => {
+        if (collectible) {
+            setChecked(collectible.isPatented || false)
+        }
+    }, [collectible])
 
     const acquiredDate = collectible?.acquiredDate ? new Date(collectible.acquiredDate) : new Date();
     const formattedDate = acquiredDate.toISOString();
@@ -27,7 +34,8 @@ export const CollectibleDetails = () => {
 
     const onSubmit = (data) => {
         setIsEditing(false);
-        editCollectible({ ...data, id: collectible.id, collectionId: collectible.collectionId }, images);
+        editCollectible({ ...data, id: collectible.id, collectionId: collectible.collectionId, isPatented: checked }, images);
+        setTimeout(() => window.location.reload(), 1000)
     }
 
     return (
@@ -85,7 +93,8 @@ export const CollectibleDetails = () => {
                                 <Field label="Patented" className="text-sm mb-1 flex items-center">
                                     <input
                                         {...register("isPatented")}
-                                        defaultChecked={collectible.isPatented}
+                                        checked={checked}
+                                        onChange={() => setChecked(!checked)}
                                         type="checkbox"
                                         className="ml-2"
                                         disabled={!isEditing}
@@ -93,12 +102,9 @@ export const CollectibleDetails = () => {
                                 </Field>
                                 <Field label={"Value"}>
                                     <Input
+                                        className='disabled:text-white disabled:opacity-100'
                                         {...register("value")}
                                         defaultValue={collectible.value}
-                                        _disabled={{
-                                            color: 'white',
-                                            opacity: 1,
-                                        }}
                                         type="number"
                                         disabled={!isEditing}
                                     />

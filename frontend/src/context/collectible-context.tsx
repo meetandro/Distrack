@@ -17,23 +17,7 @@ export const CollectibleProvider = ({ children }) => {
     const [state, dispatch] = useReducer(collectibleReducer, initialState);
 
     async function addCollectible(collectible: CreateCollectibleRequest) {
-        const formData = new FormData();
-        formData.append('name', collectible.name);
-        formData.append('description', collectible.description);
-        formData.append('color', collectible.color.toString());
-        formData.append('currency', collectible.currency);
-        formData.append('value', collectible.value.toString());
-        formData.append('condition', collectible.condition.toString());
-
-        const date = new Date(collectible.acquiredDate);
-        formData.append('acquiredDate', date.toISOString());
-
-        formData.append('isPatented', collectible.isPatented.toString());
-        formData.append('collectionId', collectible.collectionId.toString());
-        formData.append('categoryId', collectible.categoryId.toString());
-        collectible.images.forEach((image) => formData.append('images', image));
-
-        const id = await CollectibleService.create(formData)
+        const id = await CollectibleService.create(collectible)
         dispatch({
             type: "ADD_COLLECTIBLE",
             payload: { ...collectible, id: id }

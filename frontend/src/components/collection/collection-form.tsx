@@ -1,4 +1,4 @@
-import { Box, Button, Center, Input, Stack } from "@chakra-ui/react";
+import { Button, Center, Input, Stack } from "@chakra-ui/react";
 import { Field } from "../ui/field";
 import { useContext } from "react";
 import { Collection } from "../../models/collection";
@@ -29,32 +29,26 @@ export const CollectionForm = ({ onClose }: Props) => {
     }
 
     return (
-        <Box bg={"gray.800"} padding={5} rounded={5}>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-white">
-                <Stack>
-                    <Field label="Name" required>
-                        <Input
-                            {...register("name")}
-                            type="text"
-                            borderWidth={2}
-                            borderColor={"gray.700"}
-                            padding={2}
-                        />
-                    </Field>
-                    <Field label="Description">
-                        <Input
-                            {...register("description")}
-                            borderColor={"gray.700"}
-                            borderWidth={2}
-                            padding={2}
-                            type="text"
-                        />
-                    </Field>
-                </Stack>
-                <Center>
-                    <Button type="submit" _hover={{ textDecoration: "underline" }}>Create</Button>
-                </Center>
-            </form>
-        </Box>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-white">
+            <Stack>
+                <Field label="Name" required>
+                    <Input
+                        {...register("name")}
+                        type="text"
+                        className="border-2 p-2 border-zinc-600"
+                    />
+                </Field>
+                <Field label="Description">
+                    <Input
+                        {...register("description")}
+                        type="text"
+                        className="border-2 p-2 border-zinc-600"
+                    />
+                </Field>
+            </Stack>
+            <Center>
+                <Button type="submit" className="p-5 bg-zinc-600 hover:bg-zinc-700">Create</Button>
+            </Center>
+        </form>
     );
 };

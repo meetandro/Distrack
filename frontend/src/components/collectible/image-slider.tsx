@@ -13,29 +13,29 @@ export const ImageSlider = ({ images }: { images: { url: string }[] }) => {
     };
 
     return (
-        <Box className="relative">
+        <Box className="relative inline-block">
             <Image
                 src={`https://localhost:5001${images[currentIndex]}`}
                 alt={`Image ${currentIndex + 1}`}
-                height={300}
-                width={500}
-                className="w-full h-60 object-cover rounded-lg"
+                height={200}
+                width={150}
+                className="object-contain rounded-lg max-h-96"
             />
             {images.length > 1 && (
-                <>
+                <Box className="absolute inset-0 w-full h-full opacity-0 hover:opacity-100 flex justify-between items-center">
                     <Button
                         onClick={handlePrev}
-                        className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-600 text-white p-2 rounded-full shadow-lg hover:bg-gray-500"
+                        className="bg-opacity-75 ml-3 bg-zinc-800 hover:bg-zinc-900 rounded-sm text-white"
                     >
                         ❮
                     </Button>
                     <Button
                         onClick={handleNext}
-                        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-600 text-white p-2 rounded-full shadow-lg hover:bg-gray-500"
+                        className="bg-opacity-75 mr-3 bg-zinc-800 hover:bg-zinc-900 rounded-sm text-white"
                     >
                         ❯
                     </Button>
-                </>
+                </Box>
             )}
         </Box>
     );

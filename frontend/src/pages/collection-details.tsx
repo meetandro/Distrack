@@ -1,12 +1,14 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Collectibles } from '../components/collectible/collectibles';
 import { Box, Button } from '@chakra-ui/react';
-import { SlOptionsVertical } from 'react-icons/sl';
 import { CollectionDetailsCard } from '../components/collection/collection-details-card';
 import { useContext, useState } from 'react';
 import { CollectionContext } from '../context/collections-context';
 import { CollectibleProvider } from '../context/collectible-context';
-import { BsPlusSquare } from 'react-icons/bs';
+import { BiHome } from 'react-icons/bi';
+import { CiSettings } from 'react-icons/ci';
+import { IoIosAddCircleOutline } from 'react-icons/io';
+import { FaArrowRight } from 'react-icons/fa';
 
 export const CollectionDetails = () => {
     const { id } = useParams<{ id: string }>();
@@ -24,23 +26,28 @@ export const CollectionDetails = () => {
             <Box className="relative">
                 <Button
                     onClick={toggleMenu}
-                    className="text-white bg-gray-500 hover:bg-gray-600 p-2 rounded-lg top-3 left-20 fixed"
+                    className="text-white p-2 rounded-lg top-12 left-4 fixed"
                 >
-                    <SlOptionsVertical />
+                    <CiSettings size={20} />
                 </Button>
                 <Link to={`/collections/${collection.id}/collectibles/new`}
-                    className="text-white bg-gray-500 hover:bg-gray-600 p-3 rounded-lg top-3 left-32 fixed"
+                    className="text-white p-3 rounded-lg top-20 left-4 fixed"
                 >
-                    <BsPlusSquare />
+                    <IoIosAddCircleOutline size={20} />
+                </Link>
+                <Link to={`/`}
+                    className="text-white p-3 rounded-lg top-28 left-4 fixed"
+                >
+                    <BiHome size={20} />
                 </Link>
 
                 {isOpen && (
-                    <Box className="text-white bg-gray-500 p-2 rounded-lg top-14 left-4 fixed z-10">
+                    <Box className="text-white bg-zinc-700 p-2 rounded-lg top-14 left-14 fixed z-10">
                         <Box
                             onClick={() => navigate(`/collections/${id}/settings`)}
-                            className="block px-4 py-2 text-sm text-gray-300 bg-gray-800 rounded-md hover:bg-gray-700 hover:text-white cursor-pointer"
+                            className="px-4 py-2 text-sm text-gray-300 bg-zinc-800 rounded-md hover:bg-zinc-900 text-center cursor-pointer"
                         >
-                            Settings
+                            Tags & Categories <FaArrowRight className='inline text-lg align-middle' />
                         </Box>
 
                         <CollectionDetailsCard collection={collection} />

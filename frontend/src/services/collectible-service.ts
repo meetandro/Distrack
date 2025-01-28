@@ -1,5 +1,5 @@
 import { api } from "../utils/api";
-import { GetAllCollectiblesResponse, GetCollectibleByIdResponse } from "../models/collectible";
+import { CreateCollectibleRequest, GetAllCollectiblesResponse, GetCollectibleByIdResponse } from "../models/collectible";
 
 export default abstract class CollectibleService {
     static async getAll(collectionId: number, page: number, pageSize: number, filters): Promise<any> {
@@ -28,7 +28,6 @@ export default abstract class CollectibleService {
         }
     }
 
-
     static async getById(id: number): Promise<GetCollectibleByIdResponse> {
         try {
             const response = await api.get(`/collectibles/${id}`);
@@ -39,9 +38,26 @@ export default abstract class CollectibleService {
         }
     }
 
-    static async create(itemData: FormData) {
+    static async create(collectible: CreateCollectibleRequest) {
         try {
-            const response = await api.post('/collectibles', itemData, {
+            const formData = new FormData();
+            formData.append('name', collectible.name);
+            formData.append('description', collectible.description);
+            formData.append('color', collectible.color.toString());
+            formData.append('currency', collectible.currency);
+            formData.append('value', collectible.value.toString());
+            formData.append('condition', collectible.condition.toString());
+
+            const date = new Date(collectible.acquiredDate);
+            formData.append('acquiredDate', date.toISOString());
+
+            formData.append('isPatented', collectible.isPatented.toString());
+            formData.append('collectionId', collectible.collectionId.toString());
+            formData.append('categoryId', collectible.categoryId.toString());
+            collectible.images.forEach((image) => formData.append('images', image));
+
+
+            const response = await api.post('/collectibles', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -53,17 +69,7 @@ export default abstract class CollectibleService {
         }
     };
 
-    static async delete(id: number) {
-        try {
-            const response = await api.delete(`/collectibles/${id}`);
-            return response.data;
-        } catch (error) {
-            console.error('Error deleting item:', error);
-            throw error;
-        }
-    };
-
-    static async update(id, itemData) {
+    static async update(id: number, itemData) {
         const formData = new FormData();
         formData.append('id', id.toString());
         formData.append('name', itemData.name);
@@ -80,14 +86,12 @@ export default abstract class CollectibleService {
         formData.append('collectionId', itemData.collectionId.toString());
         formData.append('categoryId', itemData.categoryId.toString());
 
-        // Add existing images (URLs) to formData under 'existingImages'
         if (itemData.existingImages && itemData.existingImages.length > 0) {
             itemData.existingImages.forEach((imageUrl) => formData.append('existingImages', imageUrl));
         }
 
         formData.append('existingImages', '');
 
-        // Add new image files to formData under 'newImages'
         if (itemData.newImages && itemData.newImages.length > 0) {
             itemData.newImages.forEach((image) => formData.append('newImages', image));
         }
@@ -106,4 +110,13 @@ export default abstract class CollectibleService {
         throw new Error('Failed to update collectible');
     }
 
+    static async delete(id: number) {
+        try {
+            const response = await api.delete(`/collectibles/${id}`);
+            return response.data;
+        } catch (error) {
+            console.error('Error deleting item:', error);
+            throw error;
+        }
+    };
 }

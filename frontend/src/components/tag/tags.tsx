@@ -25,8 +25,6 @@ export const Tags = () => {
         fetching()
     }, [id]);
 
-    if (tags.length === 0) return <div>No tags found for this collection.</div>;
-
     return (
         <Box>
             <Text className="text-xl font-semibold">Tags for Collection {id}</Text>

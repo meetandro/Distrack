@@ -2,7 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: 'Nunito', sans-serif;
-  background-color: #2a2b2d;
+@layer base {
+  body {
+    @apply bg-zinc-900
+  }
 }

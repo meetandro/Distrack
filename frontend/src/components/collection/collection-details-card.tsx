@@ -2,9 +2,10 @@ import { useForm } from 'react-hook-form';
 import { Collection } from '../../models/collection';
 import { formatDate } from '../../utils/format-date';
 import { Box, Button, Editable, Text } from '@chakra-ui/react';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { CollectionContext } from '../../context/collections-context';
 import { useNavigate } from 'react-router-dom';
+import { FaCheck, FaTrash } from 'react-icons/fa';
 
 interface Props {
     collection: Collection;
@@ -18,33 +19,49 @@ export const CollectionDetailsCard = ({ collection }: Props) => {
     const { editCollection, removeCollection } = useContext(CollectionContext)
     const navigate = useNavigate();
 
+    const [showDeletionModal, setShowDeletionModal] = useState<boolean>(false);
+
     const onSubmit = (data: Collection) => {
         editCollection(data);
     }
 
     return (
-        <Box className="bg-gray-800 p-6 rounded-lg shadow-lg text-gray-100 mt-4">
+        <Box className="bg-zinc-800 p-3 rounded-lg shadow-lg mt-2">
             <form onSubmit={handleSubmit(onSubmit)}>
-                <Editable.Root _hover={{ color: 'black' }} {...register("name")} defaultValue={collection.name}>
+                <Editable.Root className='hover:text-black' {...register("name")} defaultValue={collection.name}>
                     <Editable.Preview />
                     <Editable.Input />
                 </Editable.Root>
 
-                <Editable.Root _hover={{ color: 'black' }} {...register("description")} defaultValue={collection.description}>
+                <Editable.Root className='hover:text-black' {...register("description")} defaultValue={collection.description}>
                     <Editable.Preview />
                     <Editable.Input />
                 </Editable.Root>
 
-                <Text>Created at {formattedDate}</Text>
+                <Text className='mb-2'>Created at {formattedDate}</Text>
 
-                <Button type='submit' bg={'green'} padding={5} _hover={{ background: "green.700" }}>submit</Button>
+                <Button className='bg-green-500 p-5 hover:bg-green-600' type='submit'>
+                    <FaCheck />
+                </Button>
+                <Button
+                    onClick={() => setShowDeletionModal(!showDeletionModal)}
+                    className="p-5 ml-5 bg-red-500 hover:bg-red-600"
+                >
+                    <FaTrash size={20} />
+                </Button>
             </form>
-            <Button
-                onClick={() => { removeCollection(collection.id); navigate('/') }}
-                className="px-4 py-2 bg-red-600 rounded-lg hover:bg-red-500 transition-all"
-            >
-                Delete
-            </Button>
-        </Box>
+
+            {showDeletionModal === true && (
+                <Box className='flex flex-col'>
+                    <Button className='bg-zinc-700 p-5 mt-5 hover:bg-red-950' onClick={() => { removeCollection(collection.id); navigate('/') }}>
+                        Are you sure?
+                        <Text className='text-red-700'>WARNING: This will delete the WHOLE collection.</Text>
+                    </Button>
+                    <Button className='bg-zinc-700 p-5 mt-3 hover:bg-green-950' onClick={() => setShowDeletionModal(false)}>
+                        <Text className='text-green-500'>Cancel Deletion</Text>
+                    </Button>
+                </Box>
+            )}
+        </Box >
     );
 };

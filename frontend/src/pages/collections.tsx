@@ -1,47 +1,86 @@
-import { Card, Center, Collapsible, GridItem, HStack, SimpleGrid, Stack, Text } from '@chakra-ui/react'
+import {
+    Center,
+    GridItem,
+    SimpleGrid,
+    Stack,
+    Text,
+    Box,
+    Button,
+    DialogBody,
+    DialogContent,
+    DialogRoot,
+    DialogTrigger,
+} from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { CollectionForm } from '../components/collection/collection-form';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { CollectionContext } from '../context/collections-context';
+import { FaPlus } from 'react-icons/fa';
 
 export const Collections = () => {
     const { collections } = useContext(CollectionContext);
 
-    const [isOpen, setIsOpen] = useState(false);
-
     return (
-        <Center>
-            <SimpleGrid padding={5} templateColumns={{ sm: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }} gap={6}>
+        <Center py={10} px={5}>
+            <SimpleGrid
+                columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
+                gap={8}
+                maxW="1200px"
+                w="full"
+            >
                 {collections.map((collection) => (
                     <GridItem key={collection.id}>
                         <Link to={`/collections/${collection.id}`}>
-                            <Card.Root paddingTop={15} paddingBottom={15} paddingStart={30} paddingEnd={30} bg={'gray.800'} height={'full'}>
-                                <Card.Body>
-                                    <HStack mb="6" gap="3">
-                                        <Stack gap="0">
-                                            <Text fontWeight="semibold" textStyle="sm" color={'white'}>
-                                                {collection.name}
-                                            </Text>
-                                        </Stack>
-                                    </HStack>
-                                    <Card.Description color={'gray.300'}>
+                            <Box
+                                bg="gray.800"
+                                borderRadius="lg"
+                                boxShadow="lg"
+                                _hover={{ boxShadow: 'xl', transform: 'scale(1.05)' }}
+                                transition="all 0.2s ease-in-out"
+                                p={6}
+                                h="full"
+                            >
+                                <Stack gap={4}>
+                                    <Text fontSize="xl" fontWeight="semibold" color="white">
+                                        {collection.name}
+                                    </Text>
+                                    <Text fontSize="sm" color="gray.400">
                                         {collection.description}
-                                    </Card.Description>
-                                </Card.Body>
-                            </Card.Root>
+                                    </Text>
+                                </Stack>
+                            </Box>
                         </Link>
                     </GridItem>
                 ))}
 
                 <GridItem>
-                    <Collapsible.Root open={isOpen}>
-                        <Collapsible.Trigger onClick={() => setIsOpen(!isOpen)} bg='gray.800' padding="20" rounded={'md'} color={'white'}>Add Collection</Collapsible.Trigger>
-                        <Collapsible.Content>
-                            <Center position={'fixed'} inset={0}>
-                                <CollectionForm onClose={() => setIsOpen(false)} />
-                            </Center>
-                        </Collapsible.Content>
-                    </Collapsible.Root>
+                    <DialogRoot>
+                        <DialogTrigger asChild>
+                            <Button variant="outline" size="sm"
+                                bg="teal.500"
+                                color="white"
+                                borderRadius="lg"
+                                boxShadow="lg"
+                                _hover={{ boxShadow: 'xl', transform: 'scale(1.05)' }}
+                                transition="all 0.2s ease-in-out"
+                                h="full"
+                                w="full"
+                                display="flex"
+                                justifyContent="center"
+                                alignItems="center"
+                                fontSize="lg"
+                                fontWeight="semibold"
+                                p={6}
+                            >
+                                <FaPlus />
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className='absolute left-0 right-0 top-0 bg-zinc-800 border-2 border-zinc-600'>
+                            <DialogBody>
+                                <CollectionForm onClose={() => { }} />
+                            </DialogBody>
+                        </DialogContent>
+                    </DialogRoot>
                 </GridItem>
             </SimpleGrid>
         </Center>

@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { CreateCollectibleRequest } from '../models/collectible';
 import { CategoryForm } from '../components/category/category-form';
 import { CategoryContext } from '../context/category-context';
@@ -30,6 +30,10 @@ export const CollectibleForm = () => {
             images: [],
         }
     });
+
+    if (categories.length === 0) {
+        return <Link className='text-blue-700' to={`/collections/${id}/settings`}>There are no existing categories to assign to collectibles. Please head to the settings page and create one.</Link>
+    }
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {

@@ -1,6 +1,5 @@
 import { useParams } from 'react-router-dom';
 import Filter from './filter';
-import Sorting from './sorting';
 import { CiFilter } from "react-icons/ci";
 import { useCollectibles } from '../../hooks/use-collectibles';
 import { useState } from 'react';
@@ -23,8 +22,8 @@ import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, Paginati
 export const Collectibles = () => {
     const { id } = useParams<{ id: string }>();
     const [page, setPage] = useState<number>(1);
-    const pageSize = 5;
-    const { collectibles, loading, error, totalCount, tempFilters, updateFilter, clearFilter, applyFilters, handleSortChange, handleSortOrderToggle } = useCollectibles(Number(id), page, pageSize);
+    const pageSize = 10;
+    const { collectibles, loading, error, totalCount, tempFilters, updateFilter, clearFilter, clearFilters, applyFilters, handleSortChange, handleSortOrderToggle } = useCollectibles(Number(id), page, pageSize);
 
     if (loading) return <div>Loading...</div>
     if (error) return <div>{error}</div>
@@ -34,17 +33,11 @@ export const Collectibles = () => {
             <DrawerRoot placement={'start'}>
                 <DrawerBackdrop />
                 <DrawerTrigger asChild>
-                    <IconButton
-                        aria-label='Filter'
-                        position={'fixed'}
-                        top={3}
-                        left={4}
-                        color={'white'}
-                    >
-                        <CiFilter />
+                    <IconButton className='fixed top-3 left-4 text-white'>
+                        <CiFilter size={20} />
                     </IconButton>
                 </DrawerTrigger>
-                <DrawerContent rounded="md" bg={'black'} position={'fixed'}>
+                <DrawerContent className='rounded-md bg-zinc-900 fixed'>
                     <DrawerBody>
                         <DrawerActionTrigger asChild>
                             <CloseButton color={'white'} />
@@ -53,13 +46,11 @@ export const Collectibles = () => {
                             tempFilters={tempFilters}
                             updateFilter={updateFilter}
                             clearFilter={clearFilter}
+                            clearFilters={clearFilters}
                             applyFilters={applyFilters}
-                            setPage={setPage}
-                        />
-                        <Sorting
-                            tempFilters={tempFilters}
                             handleSortChange={handleSortChange}
                             handleSortOrderToggle={handleSortOrderToggle}
+                            setPage={setPage}
                         />
                     </DrawerBody>
                 </DrawerContent>
@@ -69,6 +60,7 @@ export const Collectibles = () => {
 
             <Center>
                 <PaginationRoot
+                    className='text-white'
                     count={totalCount}
                     pageSize={pageSize}
                     page={page}
