@@ -9,11 +9,13 @@ export default abstract class CollectibleService {
                     page,
                     pageSize,
                     searchQuery: filters.searchQuery,
-                    colors: filters.colors.join(','), // Convert array to string
+                    colors: filters.colors.join(','),
                     currency: filters.currency,
                     minValue: filters.minValue,
                     maxValue: filters.maxValue,
-                    conditions: filters.conditions.join(','), // Convert array to string
+                    conditions: filters.conditions.join(','),
+                    categories: filters.categories.join(','),
+                    tags: filters.tags.join(','),
                     acquiredFrom: filters.acquiredFrom,
                     acquiredTo: filters.acquiredTo,
                     isPatented: filters.isPatented,

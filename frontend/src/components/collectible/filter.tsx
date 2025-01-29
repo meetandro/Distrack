@@ -1,4 +1,9 @@
-import { Box, Button, Text } from "@chakra-ui/react";
+import { Box, Button, ColorSwatch, Text } from "@chakra-ui/react";
+import { useContext, useEffect } from "react";
+import { CategoryContext } from "../../context/category-context";
+import { TagContext } from "../../context/tag-context";
+import { useParams } from "react-router-dom";
+import { Tag } from "../../models/tag";
 
 interface Props {
     tempFilters: any;
@@ -12,6 +17,17 @@ interface Props {
 }
 
 const Filter = ({ tempFilters, updateFilter, clearFilter, clearFilters, applyFilters, handleSortChange, handleSortOrderToggle, setPage }: Props) => {
+    const { id } = useParams<{ id: string }>();
+    const { categories } = useContext(CategoryContext);
+    const { tags, getTags } = useContext(TagContext);
+
+    useEffect(() => {
+        const fetching = async () => {
+            return await getTags(Number(id))
+        }
+        fetching()
+    }, [id]);
+
     const toggleSelection = (key: string, value: string) => {
         const currentSelection = tempFilters[key];
         if (currentSelection.includes(value)) {
@@ -69,7 +85,7 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, clearFilters, applyFil
                     )}
                 </Box>
 
-                <Box className="flex flex-col">
+                <Box className="flex flex-col space-y-2">
                     <Text className="text-gray-200">Value</Text>
                     <Box className="w-full flex gap-2">
                         <input
@@ -105,7 +121,7 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, clearFilters, applyFil
                     )}
                 </Box>
 
-                <Box className="flex flex-col">
+                <Box className="flex flex-col space-y-2">
                     <Text className="text-gray-200">Acquired Date</Text>
                     <Box className="flex gap-3">
                         <input
@@ -139,8 +155,6 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, clearFilters, applyFil
                     )}
                 </Box>
             </Box>
-
-
 
             <Box className="flex flex-col space-y-2">
                 <Text className="text-gray-200">Colors</Text>
@@ -193,6 +207,63 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, clearFilters, applyFil
                     </Button>
                 )}
             </Box>
+
+            {categories.length > 0 && (
+                <Box className="flex flex-col space-y-2">
+                    <Text className="text-gray-200">Categories</Text>
+                    <Box className="flex flex-wrap gap-2">
+                        {categories.map((category) => (
+                            <Box
+                                key={category.id}
+                                onClick={() => toggleSelection('categories', category.id.toString())}
+                                className={`cursor-pointer px-3 py-1 rounded-lg text-sm ${tempFilters.categories.includes(category.id.toString())
+                                    ? 'bg-gray-800 text-white'
+                                    : 'bg-gray-600 text-white'
+                                    } hover:bg-gray-700 hover:text-white`}
+                            >
+                                {category.name}
+                            </Box>
+                        ))}
+                    </Box>
+                    {tempFilters.categories.length > 0 && (
+                        <Button
+                            onClick={() => clearFilter('categories')}
+                            className="text-xs text-red-500 mt-2"
+                        >
+                            Clear Categories
+                        </Button>
+                    )}
+                </Box>
+            )}
+
+            {tags.length > 0 && (
+                <Box className="flex flex-col space-y-2">
+                    <Text className="text-gray-200">Tags</Text>
+                    <Box className="flex flex-wrap gap-2">
+                        {tags.map((tag: Tag) => (
+                            <Box
+                                key={tag.id}
+                                onClick={() => toggleSelection('tags', tag.id.toString())}
+                                className={`cursor-pointer px-3 py-1 rounded-lg text-sm ${tempFilters.tags.includes(tag.id.toString())
+                                    ? 'bg-gray-800 text-white'
+                                    : 'bg-gray-600 text-white'
+                                    } hover:bg-gray-700 hover:text-white`}
+                            >
+                                <ColorSwatch value={tag.hex} boxSize={"0.82em"} /> {tag.name}
+                            </Box>
+                        ))}
+                    </Box>
+                    {tempFilters.tags.length > 0 && (
+                        <Button
+                            onClick={() => clearFilter('tags')}
+                            className="text-xs text-red-500 mt-2"
+                        >
+                            Clear Tags
+                        </Button>
+                    )}
+                </Box>
+
+            )}
 
             <Box className="flex flex-col space-y-2">
                 <Text className="text-gray-200">Patented</Text>

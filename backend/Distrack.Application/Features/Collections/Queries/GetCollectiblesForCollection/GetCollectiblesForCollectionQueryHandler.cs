@@ -27,7 +27,10 @@ namespace Distrack.Application.Features.Collections.Queries.GetCollectiblesForCo
             if (!string.IsNullOrEmpty(request.Query))
             {
                 collectibles = collectibles.Where(c =>
-                    c.Name.Contains(request.Query.ToLower(), StringComparison.CurrentCultureIgnoreCase)
+                    c.Name.Contains(
+                        request.Query.ToLower(),
+                        StringComparison.CurrentCultureIgnoreCase
+                    )
                     || (
                         c.Description != null
                         && c.Description.Contains(
@@ -39,10 +42,10 @@ namespace Distrack.Application.Features.Collections.Queries.GetCollectiblesForCo
             }
 
             List<Color>? colorsList = null;
-            if (request.Colors is not null)
+            if (!string.IsNullOrEmpty(request.Colors))
             {
-                colorsList = request.Colors
-                    .Split(',')
+                colorsList = request
+                    .Colors.Split(',')
                     .Select(color =>
                         Enum.TryParse<Color>(color, true, out var parsedColor)
                             ? parsedColor
@@ -63,7 +66,10 @@ namespace Distrack.Application.Features.Collections.Queries.GetCollectiblesForCo
             {
                 collectibles = collectibles.Where(c =>
                     c.Currency != null
-                    && c.Currency.Contains(request.Currency.ToLower(), StringComparison.CurrentCultureIgnoreCase)
+                    && c.Currency.Contains(
+                        request.Currency.ToLower(),
+                        StringComparison.CurrentCultureIgnoreCase
+                    )
                 );
             }
 
@@ -82,10 +88,10 @@ namespace Distrack.Application.Features.Collections.Queries.GetCollectiblesForCo
             }
 
             List<Condition>? conditionsList = null;
-            if (request.Conditions is not null)
+            if (!string.IsNullOrEmpty(request.Conditions))
             {
-                conditionsList = request.Conditions
-                    .Split(',')
+                conditionsList = request
+                    .Conditions.Split(',')
                     .Select(cond =>
                         Enum.TryParse<Condition>(cond, true, out var parsedCondition)
                             ? parsedCondition
@@ -103,12 +109,9 @@ namespace Distrack.Application.Features.Collections.Queries.GetCollectiblesForCo
             }
 
             List<int>? categoryIds = null;
-            if (request.Categories is not null)
+            if (!string.IsNullOrEmpty(request.Categories))
             {
-                categoryIds = request.Categories
-                    .Split(',')
-                    .Select(int.Parse)
-                    .ToList();
+                categoryIds = request.Categories.Split(',').Select(int.Parse).ToList();
             }
             if (categoryIds is not null && categoryIds.Count != 0)
             {
@@ -116,16 +119,15 @@ namespace Distrack.Application.Features.Collections.Queries.GetCollectiblesForCo
             }
 
             List<int>? tagIds = null;
-            if (request.Tags is not null)
+            if (!string.IsNullOrEmpty(request.Tags))
             {
-                tagIds = request.Tags
-                    .Split(',')
-                    .Select(int.Parse)
-                    .ToList();
+                tagIds = request.Tags.Split(',').Select(int.Parse).ToList();
             }
             if (tagIds is not null && tagIds.Count != 0)
             {
-                collectibles = collectibles.Where(c => c.CollectibleTags.Any(ct => tagIds.Contains(ct.TagId)));
+                collectibles = collectibles.Where(c =>
+                    c.CollectibleTags.Any(ct => tagIds.Contains(ct.TagId))
+                );
             }
 
             if (request.AcquiredFrom is not null)

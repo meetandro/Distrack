@@ -14,6 +14,8 @@ export const useCollectibles = (collectionId: number, page: number, pageSize: nu
         minValue: null,
         maxValue: null,
         conditions: [],
+        categories: [],
+        tags: [],
         acquiredFrom: null,
         acquiredTo: null,
         isPatented: null,
@@ -42,7 +44,7 @@ export const useCollectibles = (collectionId: number, page: number, pageSize: nu
     };
 
     const clearFilter = (key: string) => {
-        const clearedFilters = { ...tempFilters, [key]: key === 'colors' || key === 'conditions' ? [] : null };
+        const clearedFilters = { ...tempFilters, [key]: key === 'colors' || key === 'conditions' || key === 'categories' || key === 'tags' ? [] : null };
         setTempFilters(clearedFilters);
     };
 
@@ -55,6 +57,8 @@ export const useCollectibles = (collectionId: number, page: number, pageSize: nu
                 minValue: null,
                 maxValue: null,
                 conditions: [],
+                categories: [],
+                tags: [],
                 acquiredFrom: null,
                 acquiredTo: null,
                 isPatented: null,
