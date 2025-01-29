@@ -1,26 +1,25 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import TagService from '../../services/tag-service';
 import { useCollectible } from '../../hooks/use-collectible';
 import { Box, Button, Center, DrawerActionTrigger, DrawerBackdrop, DrawerContent, DrawerHeader, DrawerRoot, DrawerTrigger, SimpleGrid } from '@chakra-ui/react';
 import { CloseButton } from '../ui/close-button';
 import { Checkbox } from '../ui/checkbox';
-import { TagContext } from '../../context/tag-context';
 import { Tag } from '../../models/tag';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../state/store';
+import { addTagsToCollectible, getTags } from '../../state/tagSlice';
 
 export const ModifyTags = () => {
     const { id, collectibleId } = useParams<{ id: string; collectibleId: string }>();
     const [selectedTags, setSelectedTags] = useState<number[]>([]);
     const { collectible } = useCollectible(Number(collectibleId));
-    const { tags, getTags } = useContext(TagContext);
+    const dispatch = useDispatch<AppDispatch>();
+    const { tags } = useSelector((state: RootState) => state.tags)
 
     useEffect(() => {
-        const fetching = async () => {
-            return await getTags(Number(id))
-        }
-        fetching()
+        dispatch(getTags(Number(id)));
         setSelectedTags(collectible?.tags || []);
-    }, [id, collectible?.tags]);
+    }, [id, collectible?.tags, dispatch]);
 
     const handleTagChange = (tagId: number) => {
         setSelectedTags((prevState) =>
@@ -32,7 +31,11 @@ export const ModifyTags = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        await TagService.addTagsToCollectible(Number(collectibleId), selectedTags);
+        const payload = {
+            id: Number(collectibleId),
+            tagIds: selectedTags,
+        }
+        dispatch(addTagsToCollectible(payload))
     };
 
     return (

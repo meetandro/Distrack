@@ -1,9 +1,11 @@
 import { Box, Button, ColorSwatch, Text } from "@chakra-ui/react";
-import { useContext, useEffect } from "react";
-import { CategoryContext } from "../../context/category-context";
-import { TagContext } from "../../context/tag-context";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Tag } from "../../models/tag";
+import { AppDispatch, RootState } from "../../state/store";
+import { useDispatch, useSelector } from "react-redux";
+import { getCategories } from "../../state/categorySlice";
+import { getTags } from "../../state/tagSlice";
 
 interface Props {
     tempFilters: any;
@@ -18,15 +20,17 @@ interface Props {
 
 const Filter = ({ tempFilters, updateFilter, clearFilter, clearFilters, applyFilters, handleSortChange, handleSortOrderToggle, setPage }: Props) => {
     const { id } = useParams<{ id: string }>();
-    const { categories } = useContext(CategoryContext);
-    const { tags, getTags } = useContext(TagContext);
+    const { categories } = useSelector((state: RootState) => state.categories);
+    const dispatch = useDispatch<AppDispatch>();
+    const { tags } = useSelector((state: RootState) => state.tags)
 
     useEffect(() => {
-        const fetching = async () => {
-            return await getTags(Number(id))
-        }
-        fetching()
-    }, [id]);
+        dispatch(getTags(Number(id)))
+    }, [id, dispatch]);
+
+    useEffect(() => {
+        dispatch(getCategories());
+    }, [dispatch])
 
     const toggleSelection = (key: string, value: string) => {
         const currentSelection = tempFilters[key];

@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Tag } from '../../models/tag';
 import {
     Badge,
@@ -11,19 +11,19 @@ import {
     Text
 } from '@chakra-ui/react';
 import { TagForm } from './tag-form';
-import { TagContext } from '../../context/tag-context';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../state/store';
+import { deleteTag, getTags } from '../../state/tagSlice';
 
 export const Tags = () => {
     const { id } = useParams<{ id: string }>();
-    const { tags, getTags, removeTag } = useContext(TagContext);
+    const dispatch = useDispatch<AppDispatch>();
+    const { tags } = useSelector((state: RootState) => state.tags)
     const [activeTag, setActiveTag] = useState<Tag | null | undefined>(undefined);
 
     useEffect(() => {
-        const fetching = async () => {
-            return await getTags(Number(id))
-        }
-        fetching()
-    }, [id]);
+        dispatch(getTags(Number(id)));
+    }, [id, dispatch])
 
     return (
         <Box>
@@ -40,7 +40,7 @@ export const Tags = () => {
                                 <Box className="space-x-2">
                                     <Button bg={'green'} onClick={() => setActiveTag(tag)}>Edit</Button>
                                     <Button
-                                        onClick={() => removeTag(tag.id)}
+                                        onClick={() => dispatch(deleteTag(tag.id))}
                                         className="px-4 py-2 bg-red-600 rounded-lg text-white hover:bg-red-500 transition-all"
                                     >
                                         Delete

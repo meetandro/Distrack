@@ -1,9 +1,10 @@
 import { Box, Button, Input, Stack } from "@chakra-ui/react";
 import { Field } from "../ui/field";
 import { Category } from "../../models/category";
-import { useContext } from "react";
-import { CategoryContext } from "../../context/category-context";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../state/store";
+import { createCategory, updateCategory } from "../../state/categorySlice";
 
 interface Props {
     existingCategory?: Category | null;
@@ -11,17 +12,17 @@ interface Props {
 }
 
 export const CategoryForm = ({ existingCategory, onClose }: Props) => {
+    const dispatch = useDispatch<AppDispatch>();
     const { register, handleSubmit, reset } = useForm<Category>({
         defaultValues: {
             id: existingCategory?.id ?? 0,
             name: existingCategory?.name ?? "",
         }
     });
-    const { addCategory, editCategory } = useContext(CategoryContext)
 
     const onSubmit = async (data: Category) => {
-        if (existingCategory) editCategory(data)
-        else addCategory(data)
+        if (existingCategory) dispatch(updateCategory(data))
+        else dispatch(createCategory(data))
 
         reset();
         onClose();

@@ -5,17 +5,19 @@ import { useCollectible } from '../hooks/use-collectible';
 import { Box, Button, Image, Input, Stack } from '@chakra-ui/react';
 import { Field } from '../components/ui/field';
 import { FaRegEdit } from 'react-icons/fa';
-import { TagProvider } from '../context/tag-context';
-import { CategoryContext } from '../context/category-context';
 import { CollectibleContext } from '../context/collectible-context';
 import { useForm } from 'react-hook-form';
 import { mapColor, mapCondition } from '../utils/enum-mapper';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../state/store';
+import { getCategories } from '../state/categorySlice';
 
 export const CollectibleDetails = () => {
     const { collectibleId } = useParams<{ collectibleId: string }>();
     const navigate = useNavigate();
     const { collectible, images, handleFileChange, handleRemoveImage } = useCollectible(Number(collectibleId));
-    const { categories } = useContext(CategoryContext)
+    const { categories } = useSelector((state: RootState) => state.categories)
+    const dispatch = useDispatch<AppDispatch>();
     const [checked, setChecked] = useState(false)
     const { editCollectible, removeCollectible } = useContext(CollectibleContext);
     const [isEditing, setIsEditing] = useState(false);
@@ -26,6 +28,10 @@ export const CollectibleDetails = () => {
             setChecked(collectible.isPatented || false)
         }
     }, [collectible])
+
+    useEffect(() => {
+        dispatch(getCategories())
+    }, [dispatch])
 
     const acquiredDate = collectible?.acquiredDate ? new Date(collectible.acquiredDate) : new Date();
     const formattedDate = acquiredDate.toISOString();
@@ -258,9 +264,7 @@ export const CollectibleDetails = () => {
                         Delete Collectible
                     </Button>
 
-                    <TagProvider>
-                        <ModifyTags />
-                    </TagProvider>
+                    <ModifyTags />
 
                     <Link to={`/collections/${collectible.collectionId}`} className="w-full py-2 mt-6 bg-cyan-600 rounded-lg hover:bg-cyan-500 transition-all flex items-center justify-center">
                         Back to collection

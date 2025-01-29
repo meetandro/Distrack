@@ -18,7 +18,6 @@ import {
 } from '@chakra-ui/react';
 import { CloseButton } from '../ui/close-button';
 import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from '../ui/pagination';
-import { TagProvider } from '../../context/tag-context';
 
 export const Collectibles = () => {
     const { id } = useParams<{ id: string }>();
@@ -43,18 +42,16 @@ export const Collectibles = () => {
                         <DrawerActionTrigger asChild>
                             <CloseButton color={'white'} />
                         </DrawerActionTrigger>
-                        <TagProvider>
-                            <Filter
-                                tempFilters={tempFilters}
-                                updateFilter={updateFilter}
-                                clearFilter={clearFilter}
-                                clearFilters={clearFilters}
-                                applyFilters={applyFilters}
-                                handleSortChange={handleSortChange}
-                                handleSortOrderToggle={handleSortOrderToggle}
-                                setPage={setPage}
-                            />
-                        </TagProvider>
+                        <Filter
+                            tempFilters={tempFilters}
+                            updateFilter={updateFilter}
+                            clearFilter={clearFilter}
+                            clearFilters={clearFilters}
+                            applyFilters={applyFilters}
+                            handleSortChange={handleSortChange}
+                            handleSortOrderToggle={handleSortOrderToggle}
+                            setPage={setPage}
+                        />
                     </DrawerBody>
                 </DrawerContent>
             </DrawerRoot>

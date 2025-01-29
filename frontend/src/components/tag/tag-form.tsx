@@ -1,10 +1,11 @@
 import { Box, Stack, Input, Button } from "@chakra-ui/react";
 import { Field } from "../ui/field";
-import { useContext } from "react";
 import { useParams } from "react-router-dom";
 import { Tag } from "../../models/tag";
-import { TagContext } from "../../context/tag-context";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../state/store";
+import { createTag, updateTag } from "../../state/tagSlice";
 
 interface Props {
     existingTag?: Tag | null;
@@ -13,6 +14,7 @@ interface Props {
 
 export const TagForm = ({ existingTag, onClose }: Props) => {
     const { id } = useParams<{ id: string }>();
+    const dispatch = useDispatch<AppDispatch>();
     const { register, handleSubmit, reset } = useForm<Tag>(
         {
             defaultValues: {
@@ -24,11 +26,10 @@ export const TagForm = ({ existingTag, onClose }: Props) => {
             },
         }
     );
-    const { addTag, editTag } = useContext(TagContext)
 
     const onSubmit = async (data: Tag) => {
-        if (existingTag) editTag(data)
-        else addTag(data)
+        if (existingTag) dispatch(updateTag(data))
+        else dispatch(createTag(data))
 
         reset();
         onClose();

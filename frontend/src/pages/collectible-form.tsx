@@ -1,20 +1,29 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { CreateCollectibleRequest } from '../models/collectible';
 import { CategoryForm } from '../components/category/category-form';
-import { CategoryContext } from '../context/category-context';
 import { CollectibleContext } from '../context/collectible-context';
 import { useForm } from 'react-hook-form';
 import { Box, Button, Input, Stack } from '@chakra-ui/react';
 import { Field } from '../components/ui/field';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCategories } from '../state/categorySlice';
+import { AppDispatch, RootState } from '../state/store';
 
 export const CollectibleForm = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const { categories } = useContext(CategoryContext);
     const [showCreateCategory, setShowCreateCategory] = useState(false); // Toggle for CreateCategory component
     const [images, setImages] = useState<File[]>([]);
     const { addCollectible } = useContext(CollectibleContext);
+
+    const dispatch = useDispatch<AppDispatch>();
+    const { categories } = useSelector((state: RootState) => state.categories);
+
+    useEffect(() => {
+        dispatch(getCategories());
+    }, [dispatch])
+
     const { register, handleSubmit, reset } = useForm<CreateCollectibleRequest>({
         defaultValues: {
             name: '',
