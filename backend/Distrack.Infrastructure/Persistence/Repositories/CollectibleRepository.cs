@@ -6,20 +6,11 @@ namespace Distrack.Infrastructure.Persistence.Repositories
 {
     internal class CollectibleRepository(ApplicationDbContext context) : ICollectibleRepository
     {
-        public async Task<IEnumerable<Collectible>> GetAllAsync()
-        {
-            var collectibles = await context
-                .Collectibles.Include(c => c.Images)
-                .Include(c => c.CollectibleTags)
-                .ToListAsync();
-            return collectibles;
-        }
-
         public async Task<Collectible?> GetByIdAsync(int id)
         {
             var collectible = await context
                 .Collectibles
-                .Include(c => c.CollectibleTags) // Fix
+                .Include(c => c.CollectibleTags)
                 .Include(c => c.Images)
                 .FirstOrDefaultAsync(c => c.Id == id);
             return collectible;

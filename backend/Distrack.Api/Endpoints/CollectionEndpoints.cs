@@ -16,10 +16,6 @@ public static class CollectionEndpoints
     {
         var root = app.MapGroup("/api/collections");
 
-        root.MapGet("/{id}/collectibles", GetCollectiblesForCollection);
-
-        root.MapGet("/{id}/tags", GetTagsForCollection);
-
         root.MapGet("", GetCollections);
 
         root.MapGet("/{id}", GetCollectionById);
@@ -29,51 +25,10 @@ public static class CollectionEndpoints
         root.MapPut("/{id}", UpdateCollection);
 
         root.MapDelete("/{id}", DeleteCollection);
-    }
 
-    public static async Task<IResult> GetCollectiblesForCollection(
-        int id,
-        int page,
-        int pageSize,
-        string? searchQuery,
-        string? colors,
-        string? currency,
-        decimal? minValue,
-        decimal? maxValue,
-        string? conditions,
-        DateTime? acquiredFrom,
-        DateTime? acquiredTo,
-        bool? isPatented,
-        string? sortBy,
-        string? sortOrder,
-        IMediator mediator
-    )
-    {
-        var query = new GetCollectiblesForCollectionQuery(
-            id,
-            page,
-            pageSize,
-            searchQuery,
-            colors,
-            currency,
-            minValue,
-            maxValue,
-            conditions,
-            acquiredFrom,
-            acquiredTo,
-            isPatented,
-            sortBy,
-            sortOrder
-        );
-        var result = await mediator.Send(query);
-        return Results.Ok(result);
-    }
+        root.MapGet("/{id}/collectibles", GetCollectiblesForCollection);
 
-    public static async Task<IResult> GetTagsForCollection(int id, IMediator mediator)
-    {
-        var query = new GetTagsForCollectionQuery(id);
-        var result = await mediator.Send(query);
-        return Results.Ok(result);
+        root.MapGet("/{id}/tags", GetTagsForCollection);
     }
 
     public static async Task<IResult> GetCollections(IMediator mediator)
@@ -112,6 +67,55 @@ public static class CollectionEndpoints
     {
         var command = new DeleteCollectionCommand(id);
         var result = await mediator.Send(command);
+        return Results.Ok(result);
+    }
+
+    public static async Task<IResult> GetCollectiblesForCollection(
+        int id,
+        int page,
+        int pageSize,
+        string? searchQuery,
+        string? colors,
+        string? currency,
+        decimal? minValue,
+        decimal? maxValue,
+        string? conditions,
+        string? categories,
+        string? tags,
+        DateTime? acquiredFrom,
+        DateTime? acquiredTo,
+        bool? isPatented,
+        string? sortBy,
+        string? sortOrder,
+        IMediator mediator
+    )
+    {
+        var query = new GetCollectiblesForCollectionQuery(
+            id,
+            page,
+            pageSize,
+            searchQuery,
+            colors,
+            currency,
+            minValue,
+            maxValue,
+            conditions,
+            categories,
+            tags,
+            acquiredFrom,
+            acquiredTo,
+            isPatented,
+            sortBy,
+            sortOrder
+        );
+        var result = await mediator.Send(query);
+        return Results.Ok(result);
+    }
+
+    public static async Task<IResult> GetTagsForCollection(int id, IMediator mediator)
+    {
+        var query = new GetTagsForCollectionQuery(id);
+        var result = await mediator.Send(query);
         return Results.Ok(result);
     }
 }

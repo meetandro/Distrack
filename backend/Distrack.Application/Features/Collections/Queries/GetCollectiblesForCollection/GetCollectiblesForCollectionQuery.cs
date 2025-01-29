@@ -13,6 +13,8 @@ namespace Distrack.Application.Features.Collections.Queries.GetCollectiblesForCo
         decimal? MinValue = null,
         decimal? MaxValue = null,
         string? Conditions = null,
+        string? Categories = null,
+        string? Tags = null,
         DateTime? AcquiredFrom = null,
         DateTime? AcquiredTo = null,
         bool? IsPatented = null,

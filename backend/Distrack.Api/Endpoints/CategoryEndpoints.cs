@@ -2,7 +2,6 @@
 using Distrack.Application.Features.Categories.Commands.DeleteCategory;
 using Distrack.Application.Features.Categories.Commands.UpdateCategory;
 using Distrack.Application.Features.Categories.Queries.GetAllCategories;
-using Distrack.Application.Features.Categories.Queries.GetCategoryById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,8 +15,6 @@ public static class CategoryEndpoints
 
         root.MapGet("", GetCategories);
 
-        root.MapGet("/{id}", GetCategoryById);
-
         root.MapPost("", CreateCategory);
 
         root.MapPut("/{id}", UpdateCategory);
@@ -30,13 +27,6 @@ public static class CategoryEndpoints
         var query = new GetAllCategoriesQuery();
         var result = await mediator.Send(query);
         return Results.Ok(result);
-    }
-
-    public static async Task<IResult> GetCategoryById(int id, IMediator mediator)
-    {
-        var query = new GetCategoryByIdQuery(id);
-        var result = await mediator.Send(query);
-        return result is not null ? Results.Ok(result) : Results.NotFound();
     }
 
     public static async Task<IResult> CreateCategory(

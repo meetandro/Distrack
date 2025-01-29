@@ -4,11 +4,9 @@ namespace Distrack.Application.Contracts.Persistence
 {
     public interface ITagRepository
     {
-        Task<IEnumerable<Tag>> GetAllAsync();
+        Task<Tag?> GetByIdAsync(int id);
 
         Task<IEnumerable<Tag>> GetByIdsAsync(List<int> ids);
-
-        Task<Tag?> GetByIdAsync(int id);
 
         Task<Tag> CreateAsync(Tag tag);
 

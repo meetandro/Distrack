@@ -66,19 +66,19 @@ namespace Distrack.Application.Features.Collectibles.Commands.UpdateCollectible
                 collectible.Images.Add(imageUrl);
             }
 
-            var updatedCollectible = await collectibleRepository.UpdateAsync(collectible);
+            var result = await collectibleRepository.UpdateAsync(collectible);
 
             return new UpdateCollectibleResponse(
-                updatedCollectible.Name,
-                updatedCollectible.Description,
-                updatedCollectible.Color,
-                updatedCollectible.Currency,
-                updatedCollectible.Value,
-                updatedCollectible.Condition,
-                updatedCollectible.AcquiredDate,
-                updatedCollectible.IsPatented,
-                updatedCollectible.CategoryId,
-                updatedCollectible.CollectionId
+                result.Name,
+                result.Description,
+                result.Color,
+                result.Currency,
+                result.Value,
+                result.Condition,
+                result.AcquiredDate,
+                result.IsPatented,
+                result.CategoryId,
+                result.CollectionId
             );
         }
     }

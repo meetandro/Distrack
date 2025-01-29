@@ -12,6 +12,10 @@ namespace Distrack.Application.Features.Collectibles.Commands.DeleteCollectible
         )
         {
             var collectible = await collectibleRepository.GetByIdAsync(request.Id);
+            if (collectible is null)
+            {
+                return false;
+            }
 
             var imageUrls = collectible.Images.Select(i => i.Url);
 

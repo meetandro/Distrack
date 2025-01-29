@@ -22,20 +22,6 @@ namespace Distrack.Infrastructure.Persistence.Services
             return fileName;
         }
 
-        public async Task<List<string>> SaveFilesInFolderAsync(
-            IFormFileCollection files,
-            string folder
-        )
-        {
-            var savedFiles = new List<string>();
-            foreach (var file in files)
-            {
-                var savedFile = await SaveFileInFolderAsync(file, folder);
-                savedFiles.Add(savedFile);
-            }
-            return savedFiles;
-        }
-
         public void DeleteFileInFolder(string fileName, string folder)
         {
             string fullPath = root + fileName;

@@ -102,6 +102,32 @@ namespace Distrack.Application.Features.Collections.Queries.GetCollectiblesForCo
                 );
             }
 
+            List<int>? categoryIds = null;
+            if (request.Categories is not null)
+            {
+                categoryIds = request.Categories
+                    .Split(',')
+                    .Select(int.Parse)
+                    .ToList();
+            }
+            if (categoryIds is not null && categoryIds.Count != 0)
+            {
+                collectibles = collectibles.Where(c => categoryIds.Contains(c.CategoryId));
+            }
+
+            List<int>? tagIds = null;
+            if (request.Tags is not null)
+            {
+                tagIds = request.Tags
+                    .Split(',')
+                    .Select(int.Parse)
+                    .ToList();
+            }
+            if (tagIds is not null && tagIds.Count != 0)
+            {
+                collectibles = collectibles.Where(c => c.CollectibleTags.Any(ct => tagIds.Contains(ct.TagId)));
+            }
+
             if (request.AcquiredFrom is not null)
             {
                 collectibles = collectibles.Where(c =>
@@ -151,7 +177,7 @@ namespace Distrack.Application.Features.Collections.Queries.GetCollectiblesForCo
                 .Take(request.PageSize)
                 .ToList();
 
-            var collectibleResponse = pagedCollectibles.Select(
+            var collectiblesResponse = pagedCollectibles.Select(
                 c => new GetCollectiblesForCollectionQueryResponse(
                     c.Id,
                     c.Name,
@@ -172,7 +198,7 @@ namespace Distrack.Application.Features.Collections.Queries.GetCollectiblesForCo
             );
 
             return new PaginatedList<GetCollectiblesForCollectionQueryResponse>(
-                collectibleResponse,
+                collectiblesResponse,
                 count,
                 request.Page,
                 request.PageSize

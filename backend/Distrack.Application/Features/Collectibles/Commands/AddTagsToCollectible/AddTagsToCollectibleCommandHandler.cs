@@ -15,6 +15,10 @@ namespace Distrack.Application.Features.Collectibles.Commands.AddTagsToCollectib
         )
         {
             var collectible = await collectibleRepository.GetByIdAsync(request.Id);
+            if (collectible is null)
+            {
+                return false;
+            }
 
             collectible.CollectibleTags.Clear();
 
@@ -22,8 +26,8 @@ namespace Distrack.Application.Features.Collectibles.Commands.AddTagsToCollectib
 
             foreach (var tag in tags)
             {
-                var newTag = new CollectibleTag { CollectibleId = collectible.Id, TagId = tag.Id };
-                collectible.CollectibleTags.Add(newTag);
+                var collectibleTag = new CollectibleTag { CollectibleId = collectible.Id, TagId = tag.Id };
+                collectible.CollectibleTags.Add(collectibleTag);
             }
 
             await collectibleRepository.UpdateAsync(collectible);

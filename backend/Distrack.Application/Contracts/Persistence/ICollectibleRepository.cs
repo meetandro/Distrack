@@ -4,8 +4,6 @@ namespace Distrack.Application.Contracts.Persistence
 {
     public interface ICollectibleRepository
     {
-        Task<IEnumerable<Collectible>> GetAllAsync();
-
         Task<Collectible?> GetByIdAsync(int id);
 
         Task<Collectible> GetByIdIncludeImagesAsync(int id);
