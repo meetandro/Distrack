@@ -7,7 +7,7 @@ import { Tag } from '../../models/tag';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../state/store';
 import { addTagsToCollectible, getTags } from '../../state/tagSlice';
-import { Collectible } from '../../state/collectibleSlice';
+import { Collectible } from '../../models/collectible';
 
 interface Props {
     collectible: Collectible;

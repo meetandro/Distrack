@@ -2,13 +2,13 @@ import { Link } from "react-router-dom";
 import { mapColor, mapCondition } from "../../utils/enum-mapper";
 import { ImageSlider } from "./image-slider";
 import { Badge, Box, Center, GridItem, SimpleGrid, Text } from "@chakra-ui/react";
-import { GetAllCollectiblesResponse } from "../../models/collectible";
+import { Collectible } from "../../models/collectible";
 import { LuPaintbrushVertical } from "react-icons/lu";
 import { PiSparkle } from "react-icons/pi";
 
 interface Props {
     collectionId: number;
-    collectibles: GetAllCollectiblesResponse[];
+    collectibles: Collectible[];
 }
 
 export const CollectibleGrid = ({ collectionId, collectibles }: Props) => {

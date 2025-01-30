@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { CreateCollectibleRequest } from '../models/collectible';
+import { Collectible } from '../models/collectible';
 import { CategoryForm } from '../components/category/category-form';
 import { useForm } from 'react-hook-form';
 import { Box, Button, Input, Stack } from '@chakra-ui/react';
@@ -23,7 +23,7 @@ export const CollectibleForm = () => {
         dispatch(getCategories());
     }, [dispatch])
 
-    const { register, handleSubmit, reset } = useForm<CreateCollectibleRequest>({
+    const { register, handleSubmit, reset } = useForm<Collectible>({
         defaultValues: {
             name: '',
             description: '',
@@ -35,7 +35,6 @@ export const CollectibleForm = () => {
             isPatented: false,
             collectionId: Number(id),
             categoryId: 0,
-            images: [],
         }
     });
 
@@ -49,8 +48,8 @@ export const CollectibleForm = () => {
         }
     };
 
-    const onSubmit = async (data: CreateCollectibleRequest) => {
-        dispatch(createCollectible(({ ...data, images: images })))
+    const onSubmit = async (data: Collectible) => {
+        dispatch(createCollectible({ data: data, images: images }))
 
         reset();
 

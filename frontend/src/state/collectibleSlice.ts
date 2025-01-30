@@ -1,22 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { api } from "../utils/api";
-import { CreateCollectibleRequest } from "../models/collectible";
-
-export interface Collectible {
-    id: number;
-    name: string;
-    description: string;
-    color: number;
-    currency: string;
-    value: number;
-    condition: string;
-    acquiredDate: Date;
-    isPatented: boolean;
-    collectionId: number;
-    categoryId: number;
-    images: { url: string }[];
-    tags: { id: number; name: string; hex: string }[];
-}
+import { Collectible } from "../models/collectible";
 
 interface CollectibleState {
     collectibles: Collectible[],
@@ -88,7 +72,7 @@ export const fetchCollectibles = createAsyncThunk(
 
 export const createCollectible = createAsyncThunk(
     "collectibles/createCollectible",
-    async (data: CreateCollectibleRequest) => {
+    async ({ data, images }: { data: Collectible, images: any }) => {
         const formData = new FormData();
         formData.append('name', data.name);
         formData.append('description', data.description);
@@ -103,7 +87,7 @@ export const createCollectible = createAsyncThunk(
         formData.append('isPatented', data.isPatented.toString());
         formData.append('collectionId', data.collectionId.toString());
         formData.append('categoryId', data.categoryId.toString());
-        data.images.forEach((image) => formData.append('images', image));
+        images.forEach((image) => formData.append('images', image));
 
         const response = await api.post('/collectibles', formData, {
             headers: {
@@ -114,14 +98,9 @@ export const createCollectible = createAsyncThunk(
     }
 )
 
-interface Params {
-    data: any,
-    images: any,
-}
-
 export const updateCollectible = createAsyncThunk(
     "collectibles/updateCollectible",
-    async ({ data, images }: Params) => {
+    async ({ data, images }: { data: any, images: any }) => {
         const existingUrls = images.filter((image) => typeof image === 'string') as string[];
         const newFiles = images.filter((image) => image instanceof File) as File[];
 
