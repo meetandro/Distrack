@@ -6,23 +6,18 @@ import { AppDispatch, RootState } from "../../state/store";
 import { useDispatch, useSelector } from "react-redux";
 import { getCategories } from "../../state/categorySlice";
 import { getTags } from "../../state/tagSlice";
+import { applyFilters, clearFilter, clearFilters, handleSortChange, handleSortOrderToggle, updateFilter } from "../../state/collectibleSlice";
 
 interface Props {
-    tempFilters: any;
-    updateFilter: (key: string, value: any) => void;
-    clearFilter: (key: string) => void;
-    clearFilters: () => void;
-    applyFilters: () => void;
-    handleSortChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-    handleSortOrderToggle: () => void;
     setPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const Filter = ({ tempFilters, updateFilter, clearFilter, clearFilters, applyFilters, handleSortChange, handleSortOrderToggle, setPage }: Props) => {
+const Filter = ({ setPage }: Props) => {
     const { id } = useParams<{ id: string }>();
-    const { categories } = useSelector((state: RootState) => state.categories);
     const dispatch = useDispatch<AppDispatch>();
+    const { categories } = useSelector((state: RootState) => state.categories);
     const { tags } = useSelector((state: RootState) => state.tags)
+    const { tempFilters } = useSelector((state: RootState) => state.collectibles);
 
     useEffect(() => {
         dispatch(getTags(Number(id)))
@@ -33,19 +28,20 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, clearFilters, applyFil
     }, [dispatch])
 
     const toggleSelection = (key: string, value: string) => {
-        const currentSelection = tempFilters[key];
-        if (currentSelection.includes(value)) {
-            updateFilter(key, currentSelection.filter((item: string) => item !== value));
-        } else {
-            updateFilter(key, [...currentSelection, value]);
-        }
+        const currentSelection = tempFilters[key] || [];
+
+        const updatedSelection = currentSelection.includes(value)
+            ? currentSelection.filter((item: string) => item !== value) // Remove if already selected
+            : [...currentSelection, value]; // Add if not selected
+
+        dispatch(updateFilter({ [key]: updatedSelection }));
     };
 
     const toggleBooleanFilter = (key: string, value: boolean) => {
         if (tempFilters[key] === value) {
-            updateFilter(key, null);
+            dispatch(updateFilter({ [key]: null }));
         } else {
-            updateFilter(key, value);
+            dispatch(updateFilter({ [key]: value }));
         }
     };
 
@@ -58,12 +54,12 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, clearFilters, applyFil
                         type="text"
                         placeholder="Search"
                         value={tempFilters.searchQuery}
-                        onChange={(e) => updateFilter('searchQuery', e.target.value)}
+                        onChange={(e) => dispatch(updateFilter({ 'searchQuery': e.target.value }))}
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2"
                     />
                     {tempFilters.searchQuery && (
                         <button
-                            onClick={() => clearFilter('searchQuery')}
+                            onClick={() => dispatch(clearFilter('searchQuery'))}
                             className="text-xs text-red-500 mt-2"
                         >
                             Clear Search
@@ -76,12 +72,12 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, clearFilters, applyFil
                         type="text"
                         placeholder="Currency"
                         value={tempFilters.currency}
-                        onChange={(e) => updateFilter('currency', e.target.value)}
+                        onChange={(e) => dispatch(updateFilter({ 'currency': e.target.value }))}
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2"
                     />
                     {tempFilters.currency && (
                         <Button
-                            onClick={() => clearFilter('currency')}
+                            onClick={() => dispatch(clearFilter('currency'))}
                             className="text-xs text-red-500 mt-2"
                         >
                             Clear Currency
@@ -96,20 +92,20 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, clearFilters, applyFil
                             type="number"
                             placeholder="Min"
                             value={tempFilters.minValue || ''}
-                            onChange={(e) => updateFilter('minValue', Number(e.target.value))}
+                            onChange={(e) => dispatch(updateFilter({ 'minValue': Number(e.target.value) }))}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2 w-1/4"
                         />
                         <input
                             type="number"
                             placeholder="Max"
                             value={tempFilters.maxValue || ''}
-                            onChange={(e) => updateFilter('maxValue', Number(e.target.value))}
+                            onChange={(e) => dispatch(updateFilter({ 'maxValue': Number(e.target.value) }))}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2 w-1/4"
                         />
                     </Box>
                     {tempFilters.minValue !== null && (
                         <Button
-                            onClick={() => clearFilter('minValue')}
+                            onClick={() => dispatch(clearFilter('minValue'))}
                             className="text-xs text-red-500 mt-2"
                         >
                             Clear Min Value
@@ -117,7 +113,7 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, clearFilters, applyFil
                     )}
                     {tempFilters.maxValue !== null && (
                         <Button
-                            onClick={() => clearFilter('maxValue')}
+                            onClick={() => dispatch(clearFilter('maxValue'))}
                             className="text-xs text-red-500 mt-2"
                         >
                             Clear Max Value
@@ -131,19 +127,19 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, clearFilters, applyFil
                         <input
                             type="date"
                             value={tempFilters.acquiredFrom || ''}
-                            onChange={(e) => updateFilter('acquiredFrom', e.target.value)}
+                            onChange={(e) => dispatch(updateFilter({ 'acquiredFrom': e.target.value }))}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2 w-1/2"
                         />
                         <input
                             type="date"
                             value={tempFilters.acquiredTo || ''}
-                            onChange={(e) => updateFilter('acquiredTo', e.target.value)}
+                            onChange={(e) => dispatch(updateFilter({ 'acquiredTo': e.target.value }))}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2 w-1/2"
                         />
                     </Box>
                     {tempFilters.acquiredFrom && (
                         <Button
-                            onClick={() => clearFilter('acquiredFrom')}
+                            onClick={() => dispatch(clearFilter('acquiredFrom'))}
                             className="text-xs text-red-500 mt-2"
                         >
                             Clear Acquired Date From
@@ -151,7 +147,7 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, clearFilters, applyFil
                     )}
                     {tempFilters.acquiredTo && (
                         <Button
-                            onClick={() => clearFilter('acquiredTo')}
+                            onClick={() => dispatch(clearFilter('acquiredTo'))}
                             className="text-xs text-red-500 mt-2"
                         >
                             Clear Acquired Date To
@@ -178,7 +174,7 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, clearFilters, applyFil
                 </Box>
                 {tempFilters.colors.length > 0 && (
                     <Button
-                        onClick={() => clearFilter('colors')}
+                        onClick={() => dispatch(clearFilter('colors'))}
                         className="text-xs text-red-500 mt-2"
                     >
                         Clear Colors
@@ -204,7 +200,7 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, clearFilters, applyFil
                 </Box>
                 {tempFilters.conditions.length > 0 && (
                     <Button
-                        onClick={() => clearFilter('conditions')}
+                        onClick={() => dispatch(clearFilter('conditions'))}
                         className="text-xs text-red-500 mt-2"
                     >
                         Clear Conditions
@@ -231,7 +227,7 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, clearFilters, applyFil
                     </Box>
                     {tempFilters.categories.length > 0 && (
                         <Button
-                            onClick={() => clearFilter('categories')}
+                            onClick={() => dispatch(clearFilter('categories'))}
                             className="text-xs text-red-500 mt-2"
                         >
                             Clear Categories
@@ -259,14 +255,13 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, clearFilters, applyFil
                     </Box>
                     {tempFilters.tags.length > 0 && (
                         <Button
-                            onClick={() => clearFilter('tags')}
+                            onClick={() => dispatch(clearFilter('tags'))}
                             className="text-xs text-red-500 mt-2"
                         >
                             Clear Tags
                         </Button>
                     )}
                 </Box>
-
             )}
 
             <Box className="flex flex-col space-y-2">
@@ -293,7 +288,7 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, clearFilters, applyFil
                 </Box>
                 {tempFilters.isPatented !== null && (
                     <Button
-                        onClick={() => clearFilter('isPatented')}
+                        onClick={() => dispatch(clearFilter('isPatented'))}
                         className="text-xs text-red-500 mt-2"
                     >
                         Clear Patented
@@ -304,7 +299,7 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, clearFilters, applyFil
             <Box className="flex flex-col space-y-4 mt-4">
                 <select
                     value={tempFilters.sortBy}
-                    onChange={handleSortChange}
+                    onChange={(e) => dispatch(handleSortChange(e.target.value))}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white p-3"
                 >
                     <option value="">Sort By</option>
@@ -314,7 +309,7 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, clearFilters, applyFil
                 </select>
 
                 <Button
-                    onClick={handleSortOrderToggle}
+                    onClick={() => dispatch(handleSortOrderToggle())}
                     className="py-2 px-4 text-sm font-medium bg-zinc-700 text-white rounded-lg hover:bg-zinc-800"
                 >
                     Order ({tempFilters.sortOrder.toUpperCase()})
@@ -322,12 +317,12 @@ const Filter = ({ tempFilters, updateFilter, clearFilter, clearFilters, applyFil
             </Box>
 
             <Button
-                onClick={() => { applyFilters(); setPage(1); }}
+                onClick={() => { dispatch(applyFilters()); setPage(1); }}
                 className="py-2 px-4 mt-4 bg-zinc-700 text-white rounded-lg hover:bg-zinc-800"
             >
                 Apply
             </Button>
-            <Button className="bg-red-500 py-2 px-4 text-white rounded-lg hover:bg-red-600 ml-2" onClick={() => clearFilters()}>Clear All</Button>
+            <Button className="bg-red-500 py-2 px-4 text-white rounded-lg hover:bg-red-600 ml-2" onClick={() => dispatch(clearFilters())}>Clear All</Button>
         </Box >
     );
 };

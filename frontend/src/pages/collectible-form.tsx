@@ -1,21 +1,20 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { CreateCollectibleRequest } from '../models/collectible';
 import { CategoryForm } from '../components/category/category-form';
-import { CollectibleContext } from '../context/collectible-context';
 import { useForm } from 'react-hook-form';
 import { Box, Button, Input, Stack } from '@chakra-ui/react';
 import { Field } from '../components/ui/field';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCategories } from '../state/categorySlice';
 import { AppDispatch, RootState } from '../state/store';
+import { createCollectible } from '../state/collectibleSlice';
 
 export const CollectibleForm = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const [showCreateCategory, setShowCreateCategory] = useState(false); // Toggle for CreateCategory component
     const [images, setImages] = useState<File[]>([]);
-    const { addCollectible } = useContext(CollectibleContext);
 
     const dispatch = useDispatch<AppDispatch>();
     const { categories } = useSelector((state: RootState) => state.categories);
@@ -35,7 +34,7 @@ export const CollectibleForm = () => {
             acquiredDate: new Date(),
             isPatented: false,
             collectionId: Number(id),
-            categoryId: categories[0].id,
+            categoryId: 0,
             images: [],
         }
     });
@@ -51,7 +50,7 @@ export const CollectibleForm = () => {
     };
 
     const onSubmit = async (data: CreateCollectibleRequest) => {
-        addCollectible({ ...data, images: images })
+        dispatch(createCollectible(({ ...data, images: images })))
 
         reset();
 

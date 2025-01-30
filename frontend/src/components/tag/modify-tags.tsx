@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useCollectible } from '../../hooks/use-collectible';
 import { Box, Button, Center, DrawerActionTrigger, DrawerBackdrop, DrawerContent, DrawerHeader, DrawerRoot, DrawerTrigger, SimpleGrid } from '@chakra-ui/react';
 import { CloseButton } from '../ui/close-button';
 import { Checkbox } from '../ui/checkbox';
@@ -8,17 +7,21 @@ import { Tag } from '../../models/tag';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../state/store';
 import { addTagsToCollectible, getTags } from '../../state/tagSlice';
+import { Collectible } from '../../state/collectibleSlice';
 
-export const ModifyTags = () => {
+interface Props {
+    collectible: Collectible;
+}
+
+export const ModifyTags = ({ collectible }: Props) => {
     const { id, collectibleId } = useParams<{ id: string; collectibleId: string }>();
     const [selectedTags, setSelectedTags] = useState<number[]>([]);
-    const { collectible } = useCollectible(Number(collectibleId));
     const dispatch = useDispatch<AppDispatch>();
     const { tags } = useSelector((state: RootState) => state.tags)
 
     useEffect(() => {
         dispatch(getTags(Number(id)));
-        setSelectedTags(collectible?.tags || []);
+        setSelectedTags(collectible?.tags.map(t => t.id) || []);
     }, [id, collectible?.tags, dispatch]);
 
     const handleTagChange = (tagId: number) => {

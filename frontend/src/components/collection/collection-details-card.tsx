@@ -2,10 +2,12 @@ import { useForm } from 'react-hook-form';
 import { Collection } from '../../models/collection';
 import { formatDate } from '../../utils/format-date';
 import { Box, Button, Editable, Text } from '@chakra-ui/react';
-import { useContext, useState } from 'react';
-import { CollectionContext } from '../../context/collections-context';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaCheck, FaTrash } from 'react-icons/fa';
+import { deleteCollection, updateCollection } from '../../state/collectionSlice';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../state/store';
 
 interface Props {
     collection: Collection;
@@ -16,13 +18,13 @@ export const CollectionDetailsCard = ({ collection }: Props) => {
         defaultValues: collection
     });
     const formattedDate = formatDate(collection.createdDate);
-    const { editCollection, removeCollection } = useContext(CollectionContext)
+    const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
 
     const [showDeletionModal, setShowDeletionModal] = useState<boolean>(false);
 
     const onSubmit = (data: Collection) => {
-        editCollection(data);
+        dispatch(updateCollection(data));
     }
 
     return (
@@ -53,7 +55,7 @@ export const CollectionDetailsCard = ({ collection }: Props) => {
 
             {showDeletionModal === true && (
                 <Box className='flex flex-col'>
-                    <Button className='bg-zinc-700 p-5 mt-5 hover:bg-red-950' onClick={() => { removeCollection(collection.id); navigate('/') }}>
+                    <Button className='bg-zinc-700 p-5 mt-5 hover:bg-red-950' onClick={() => { dispatch(deleteCollection(collection.id)); navigate('/') }}>
                         Are you sure?
                         <Text className='text-red-700'>WARNING: This will delete the WHOLE collection.</Text>
                     </Button>

@@ -190,6 +190,8 @@ namespace Distrack.Application.Features.Collections.Queries.GetCollectiblesForCo
                     c.Condition,
                     c.AcquiredDate,
                     c.IsPatented,
+                    c.CollectionId,
+                    c.CategoryId,
                     c.Images.Select(i => i.Url).ToList(),
                     c.CollectibleTags.Select(ct => new TagResponse(
                         ct.Tag.Id,

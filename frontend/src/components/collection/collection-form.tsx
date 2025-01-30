@@ -1,9 +1,10 @@
 import { Button, Center, Input, Stack } from "@chakra-ui/react";
 import { Field } from "../ui/field";
-import { useContext } from "react";
 import { Collection } from "../../models/collection";
-import { CollectionContext } from "../../context/collections-context";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../state/store";
+import { createCollection } from "../../state/collectionSlice";
 
 interface Props {
     onClose: () => void;
@@ -19,10 +20,10 @@ export const CollectionForm = ({ onClose }: Props) => {
             collectibles: [],
         }
     });
-    const { addCollection } = useContext(CollectionContext)
+    const dispatch = useDispatch<AppDispatch>();
 
     const onSubmit = async (data: Collection) => {
-        addCollection(data)
+        dispatch(createCollection(data))
 
         reset();
         onClose();

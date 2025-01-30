@@ -1,8 +1,7 @@
 import { useParams } from 'react-router-dom';
 import Filter from './filter';
 import { CiFilter } from "react-icons/ci";
-import { useCollectibles } from '../../hooks/use-collectibles';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CollectibleGrid } from './collectible-grid';
 import {
     Box,
@@ -18,15 +17,21 @@ import {
 } from '@chakra-ui/react';
 import { CloseButton } from '../ui/close-button';
 import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from '../ui/pagination';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../state/store';
+import { fetchCollectibles } from '../../state/collectibleSlice';
 
 export const Collectibles = () => {
     const { id } = useParams<{ id: string }>();
     const [page, setPage] = useState<number>(1);
     const pageSize = 10;
-    const { collectibles, loading, error, totalCount, tempFilters, updateFilter, clearFilter, clearFilters, applyFilters, handleSortChange, handleSortOrderToggle } = useCollectibles(Number(id), page, pageSize);
+    const dispatch = useDispatch<AppDispatch>();
+    const { collectibles, filters, totalCount, tempFilters } = useSelector((state: RootState) => state.collectibles);
 
-    if (loading) return <div>Loading...</div>
-    if (error) return <div>{error}</div>
+    useEffect(() => {
+        const collectionId = Number(id)
+        dispatch(fetchCollectibles({ collectionId, page, pageSize, filters: tempFilters }));
+    }, [dispatch, id, filters])
 
     return (
         <Box>
@@ -42,16 +47,7 @@ export const Collectibles = () => {
                         <DrawerActionTrigger asChild>
                             <CloseButton color={'white'} />
                         </DrawerActionTrigger>
-                        <Filter
-                            tempFilters={tempFilters}
-                            updateFilter={updateFilter}
-                            clearFilter={clearFilter}
-                            clearFilters={clearFilters}
-                            applyFilters={applyFilters}
-                            handleSortChange={handleSortChange}
-                            handleSortOrderToggle={handleSortOrderToggle}
-                            setPage={setPage}
-                        />
+                        <Filter setPage={setPage} />
                     </DrawerBody>
                 </DrawerContent>
             </DrawerRoot>

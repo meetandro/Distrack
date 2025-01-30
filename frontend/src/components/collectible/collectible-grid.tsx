@@ -24,7 +24,7 @@ export const CollectibleGrid = ({ collectionId, collectibles }: Props) => {
                         key={collectible.id}
                         className="bg-zinc-800 p-4 rounded-lg shadow-lg text-gray-100 flex flex-col md:flex-row gap-4"
                     >
-                        {collectible.images.length > 0 && (
+                        {collectible.images && collectible.images.length > 0 && (
                             <ImageSlider images={collectible.images} />
                         )}
 
@@ -46,7 +46,7 @@ export const CollectibleGrid = ({ collectionId, collectibles }: Props) => {
                                 {collectible.isPatented && (
                                     <Badge bg={'gray.500'} color={'white'}>P</Badge>
                                 )}
-                                {collectible.tags.length > 0 && collectible.tags.map((tag) => (
+                                {collectible.tags && collectible.tags.length > 0 && collectible.tags.map((tag) => (
                                     <Badge
                                         key={tag.id}
                                         variant={"solid"}

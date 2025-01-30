@@ -13,12 +13,19 @@ import {
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { CollectionForm } from '../components/collection/collection-form';
-import { useContext } from 'react';
-import { CollectionContext } from '../context/collections-context';
 import { FaPlus } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../state/store';
+import { useEffect } from 'react';
+import { getCollections } from '../state/collectionSlice';
 
 export const Collections = () => {
-    const { collections } = useContext(CollectionContext);
+    const dispatch = useDispatch<AppDispatch>();
+    const { collections } = useSelector((state: RootState) => state.collections)
+
+    useEffect(() => {
+        dispatch(getCollections());
+    }, [dispatch])
 
     return (
         <Center py={10} px={5}>

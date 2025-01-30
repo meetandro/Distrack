@@ -1,27 +1,56 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ModifyTags } from '../components/tag/modify-tags';
-import { useCollectible } from '../hooks/use-collectible';
 import { Box, Button, Image, Input, Stack } from '@chakra-ui/react';
 import { Field } from '../components/ui/field';
 import { FaRegEdit } from 'react-icons/fa';
-import { CollectibleContext } from '../context/collectible-context';
 import { useForm } from 'react-hook-form';
 import { mapColor, mapCondition } from '../utils/enum-mapper';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../state/store';
 import { getCategories } from '../state/categorySlice';
+import { deleteCollectible, fetchCollectibles, updateCollectible } from '../state/collectibleSlice';
 
 export const CollectibleDetails = () => {
-    const { collectibleId } = useParams<{ collectibleId: string }>();
+    const { id, collectibleId } = useParams<{ id: string, collectibleId: string }>();
     const navigate = useNavigate();
-    const { collectible, images, handleFileChange, handleRemoveImage } = useCollectible(Number(collectibleId));
     const { categories } = useSelector((state: RootState) => state.categories)
+    const collectible = useSelector((state: RootState) =>
+        state.collectibles.collectibles.find((c) => c.id === Number(collectibleId))
+    );
+    const [images, setImages] = useState<(File | string)[]>(
+        collectible?.images ? collectible.images.map(img => img.url) : []
+    );
     const dispatch = useDispatch<AppDispatch>();
     const [checked, setChecked] = useState(false)
-    const { editCollectible, removeCollectible } = useContext(CollectibleContext);
     const [isEditing, setIsEditing] = useState(false);
     const { register, handleSubmit } = useForm();
+    const { filters, tempFilters } = useSelector((state: RootState) => state.collectibles);
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setImages((prevImages) => [
+                ...prevImages,
+                ...Array.from(e.target.files || []),
+            ]);
+        }
+    };
+    const handleRemoveImage = (index: number) => {
+        setImages((prevImages) => prevImages.filter((_, i) => i !== index));
+    };
+
+    const onSubmit = (data) => {
+        setIsEditing(false);
+        dispatch(updateCollectible({ data: { ...data, id: collectible.id, collectionId: id, isPatented: checked }, images: images }));
+    }
+
+    useEffect(() => {
+        const collectionId = Number(id);
+        if (!collectible) {
+            dispatch(fetchCollectibles({ collectionId, page: 1, pageSize: 10, filters: tempFilters }));
+        }
+        setImages(collectible?.images || [])
+    }, [dispatch, id, filters, collectible])
 
     useEffect(() => {
         if (collectible) {
@@ -37,12 +66,6 @@ export const CollectibleDetails = () => {
     const formattedDate = acquiredDate.toISOString();
 
     if (!collectible) return <p>Loading...</p>;
-
-    const onSubmit = (data) => {
-        setIsEditing(false);
-        editCollectible({ ...data, id: collectible.id, collectionId: collectible.collectionId, isPatented: checked }, images);
-        setTimeout(() => window.location.reload(), 1000)
-    }
 
     return (
         <Box className="flex items-center justify-center min-h-screen">
@@ -233,7 +256,7 @@ export const CollectibleDetails = () => {
                                         </>
                                     ) : (
                                         <Box className="flex flex-wrap">
-                                            {collectible.imageUrls.map((image, index) => (
+                                            {collectible.images && collectible.images.map((image, index) => (
                                                 <Image
                                                     key={index}
                                                     src={`https://localhost:5001${image}`} // Display existing image
@@ -258,13 +281,13 @@ export const CollectibleDetails = () => {
                     </Box>
 
                     <Button
-                        onClick={() => { removeCollectible(collectible.id); navigate(`/collections/${collectible?.collectionId}`); }}
+                        onClick={() => { dispatch(deleteCollectible(collectible.id)); navigate(`/collections/${collectible?.collectionId}`); }}
                         className="w-full py-2 mt-6 bg-red-600 rounded-lg hover:bg-red-500 transition-all flex items-center justify-center"
                     >
                         Delete Collectible
                     </Button>
 
-                    <ModifyTags />
+                    <ModifyTags collectible={collectible} />
 
                     <Link to={`/collections/${collectible.collectionId}`} className="w-full py-2 mt-6 bg-cyan-600 rounded-lg hover:bg-cyan-500 transition-all flex items-center justify-center">
                         Back to collection
