@@ -10,7 +10,7 @@ export interface Collectible {
     isPatented: boolean;
     collectionId: number;
     categoryId: number;
-    images: { url: string }[];
+    images: string[];
     tags: { id: number; name: string; hex: string }[];
 }
 

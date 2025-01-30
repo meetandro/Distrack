@@ -8,24 +8,27 @@ import { useForm } from 'react-hook-form';
 import { mapColor, mapCondition } from '../utils/enum-mapper';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../state/store';
-import { getCategories } from '../state/categorySlice';
-import { deleteCollectible, fetchCollectibles, updateCollectible } from '../state/collectibleSlice';
+import { deleteCollectible, updateCollectible } from '../state/collectibleSlice';
+import { useCollectibles } from '../hooks/useCollectibles';
+import { Collectible } from '../models/collectible';
+import { useCategories } from '../hooks/useCategories';
 
 export const CollectibleDetails = () => {
     const { id, collectibleId } = useParams<{ id: string, collectibleId: string }>();
-    const navigate = useNavigate();
-    const { categories } = useSelector((state: RootState) => state.categories)
-    const collectible = useSelector((state: RootState) =>
-        state.collectibles.collectibles.find((c) => c.id === Number(collectibleId))
-    );
+    const { filters } = useSelector((state: RootState) => state.collectibles);
+    const collectibles = useCollectibles(Number(id), 1, 10, filters);
+    const collectible = collectibles.find(collectible => collectible.id == Number(collectibleId))
+    const categories = useCategories();
     const [images, setImages] = useState<(File | string)[]>(
-        collectible?.images ? collectible.images.map(img => img.url) : []
+        collectible?.images ?? []
     );
-    const dispatch = useDispatch<AppDispatch>();
+
     const [checked, setChecked] = useState(false)
+
+    const dispatch = useDispatch<AppDispatch>();
+    const navigate = useNavigate();
     const [isEditing, setIsEditing] = useState(false);
-    const { register, handleSubmit } = useForm();
-    const { filters, tempFilters } = useSelector((state: RootState) => state.collectibles);
+    const { register, handleSubmit } = useForm<Collectible>();
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -39,28 +42,22 @@ export const CollectibleDetails = () => {
         setImages((prevImages) => prevImages.filter((_, i) => i !== index));
     };
 
-    const onSubmit = (data) => {
-        setIsEditing(false);
-        dispatch(updateCollectible({ data: { ...data, id: collectible.id, collectionId: id, isPatented: checked }, images: images }));
+    const toggleEditMode = () => {
+        setIsEditing(!isEditing)
+        setImages(collectible?.images ?? [])
     }
 
-    useEffect(() => {
-        const collectionId = Number(id);
-        if (!collectible) {
-            dispatch(fetchCollectibles({ collectionId, page: 1, pageSize: 10, filters: tempFilters }));
-        }
-        setImages(collectible?.images || [])
-    }, [dispatch, id, filters, collectible])
+    const onSubmit = (data: Collectible) => {
+        setIsEditing(false);
+        dispatch(updateCollectible({ data: { ...data, id: collectibleId, collectionId: id, isPatented: checked }, images: images }));
+        navigate(`/collections/${id}`)
+    }
 
     useEffect(() => {
         if (collectible) {
             setChecked(collectible.isPatented || false)
         }
     }, [collectible])
-
-    useEffect(() => {
-        dispatch(getCategories())
-    }, [dispatch])
 
     const acquiredDate = collectible?.acquiredDate ? new Date(collectible.acquiredDate) : new Date();
     const formattedDate = acquiredDate.toISOString();
@@ -73,7 +70,7 @@ export const CollectibleDetails = () => {
                 <Box className="space-y-4">
                     <Box className="flex justify-between items-center">
                         <Button
-                            onClick={() => setIsEditing(!isEditing)}
+                            onClick={() => toggleEditMode()}
                             className="text-blue-500 hover:underline flex items-center"
                         >
                             {isEditing ? <><FaRegEdit /> Cancel</> : <FaRegEdit />}

@@ -1,19 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Category } from '../../models/category';
 import { Box, Text, SimpleGrid, GridItem, Button } from '@chakra-ui/react';
 import { CategoryForm } from './category-form';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../state/store';
-import { deleteCategory, getCategories } from '../../state/categorySlice';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../state/store';
+import { deleteCategory } from '../../state/categorySlice';
+import { useCategories } from '../../hooks/useCategories';
 
 export const Categories = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const { categories } = useSelector((state: RootState) => state.categories);
+    const categories = useCategories();
     const [activeCategory, setActiveCategory] = useState<Category | null | undefined>(undefined);
-
-    useEffect(() => {
-        dispatch(getCategories());
-    }, [dispatch])
 
     return (
         <Box>

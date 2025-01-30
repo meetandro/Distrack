@@ -1,7 +1,7 @@
 import { Box, Button, Image } from "@chakra-ui/react";
 import { useState } from "react";
 
-export const ImageSlider = ({ images }: { images: { url: string }[] }) => {
+export const ImageSlider = ({ images }: { images: string[] }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const handlePrev = () => {

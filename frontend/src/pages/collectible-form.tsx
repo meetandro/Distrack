@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Collectible } from '../models/collectible';
 import { CategoryForm } from '../components/category/category-form';
 import { useForm } from 'react-hook-form';
 import { Box, Button, Input, Stack } from '@chakra-ui/react';
 import { Field } from '../components/ui/field';
-import { useDispatch, useSelector } from 'react-redux';
-import { getCategories } from '../state/categorySlice';
-import { AppDispatch, RootState } from '../state/store';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../state/store';
 import { createCollectible } from '../state/collectibleSlice';
+import { useCategories } from '../hooks/useCategories';
 
 export const CollectibleForm = () => {
     const { id } = useParams<{ id: string }>();
@@ -17,11 +17,7 @@ export const CollectibleForm = () => {
     const [images, setImages] = useState<File[]>([]);
 
     const dispatch = useDispatch<AppDispatch>();
-    const { categories } = useSelector((state: RootState) => state.categories);
-
-    useEffect(() => {
-        dispatch(getCategories());
-    }, [dispatch])
+    const categories = useCategories();
 
     const { register, handleSubmit, reset } = useForm<Collectible>({
         defaultValues: {

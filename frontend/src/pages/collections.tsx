@@ -14,18 +14,10 @@ import {
 import { Link } from 'react-router-dom';
 import { CollectionForm } from '../components/collection/collection-form';
 import { FaPlus } from 'react-icons/fa';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../state/store';
-import { useEffect } from 'react';
-import { getCollections } from '../state/collectionSlice';
+import { useCollections } from '../hooks/useCollections';
 
 export const Collections = () => {
-    const dispatch = useDispatch<AppDispatch>();
-    const { collections } = useSelector((state: RootState) => state.collections)
-
-    useEffect(() => {
-        dispatch(getCollections());
-    }, [dispatch])
+    const collections = useCollections();
 
     return (
         <Center py={10} px={5}>

@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Tag } from '../../models/tag';
 import {
     Badge,
@@ -11,19 +11,16 @@ import {
     Text
 } from '@chakra-ui/react';
 import { TagForm } from './tag-form';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../state/store';
-import { deleteTag, getTags } from '../../state/tagSlice';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../state/store';
+import { deleteTag } from '../../state/tagSlice';
+import { useTags } from '../../hooks/useTags';
 
 export const Tags = () => {
     const { id } = useParams<{ id: string }>();
     const dispatch = useDispatch<AppDispatch>();
-    const { tags } = useSelector((state: RootState) => state.tags)
     const [activeTag, setActiveTag] = useState<Tag | null | undefined>(undefined);
-
-    useEffect(() => {
-        dispatch(getTags(Number(id)));
-    }, [id, dispatch])
+    const tags = useTags(Number(id));
 
     return (
         <Box>

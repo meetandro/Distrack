@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import Filter from './filter';
 import { CiFilter } from "react-icons/ci";
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { CollectibleGrid } from './collectible-grid';
 import {
     Box,
@@ -17,21 +17,16 @@ import {
 } from '@chakra-ui/react';
 import { CloseButton } from '../ui/close-button';
 import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from '../ui/pagination';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../state/store';
-import { fetchCollectibles } from '../../state/collectibleSlice';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../state/store';
+import { useCollectibles } from '../../hooks/useCollectibles';
 
 export const Collectibles = () => {
     const { id } = useParams<{ id: string }>();
     const [page, setPage] = useState<number>(1);
     const pageSize = 10;
-    const dispatch = useDispatch<AppDispatch>();
-    const { collectibles, filters, totalCount, tempFilters } = useSelector((state: RootState) => state.collectibles);
-
-    useEffect(() => {
-        const collectionId = Number(id)
-        dispatch(fetchCollectibles({ collectionId, page, pageSize, filters: tempFilters }));
-    }, [dispatch, id, filters])
+    const { totalCount, tempFilters } = useSelector((state: RootState) => state.collectibles);
+    const collectibles = useCollectibles(Number(id), page, pageSize, tempFilters);
 
     return (
         <Box>

@@ -2,30 +2,21 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Collectibles } from '../components/collectible/collectibles';
 import { Box, Button } from '@chakra-ui/react';
 import { CollectionDetailsCard } from '../components/collection/collection-details-card';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { BiHome } from 'react-icons/bi';
 import { CiSettings } from 'react-icons/ci';
 import { IoIosAddCircleOutline } from 'react-icons/io';
 import { FaArrowRight } from 'react-icons/fa';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../state/store';
-import { getCollections } from '../state/collectionSlice';
+import { useCollections } from '../hooks/useCollections';
 
 export const CollectionDetails = () => {
     const { id } = useParams<{ id: string }>();
-    const { collections } = useSelector((state: RootState) => state.collections);
-    const dispatch = useDispatch<AppDispatch>();
+    const collections = useCollections();
     const collection = collections.find(collection => collection.id == Number(id))
     const navigate = useNavigate();
 
     const [isOpen, setIsOpen] = useState(false);
     const toggleMenu = () => setIsOpen((prev) => !prev);
-
-    useEffect(() => {
-        if (!collection) {
-            dispatch(getCollections());
-        }
-    }, [collection, dispatch]);
 
     if (!collection) return;
 
