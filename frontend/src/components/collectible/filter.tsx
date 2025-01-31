@@ -1,11 +1,11 @@
-import { Box, Button, ColorSwatch, Text } from "@chakra-ui/react";
+import { Box, Button, Text } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
-import { Tag } from "../../models/tag";
 import { AppDispatch, RootState } from "../../state/store";
 import { useDispatch, useSelector } from "react-redux";
 import { applyFilters, clearFilter, clearFilters, handleSortChange, handleSortOrderToggle, updateFilter } from "../../state/collectibleSlice";
 import { useCategories } from "../../hooks/useCategories";
 import { useTags } from "../../hooks/useTags";
+import { FilterList } from "./filter-list";
 
 interface Props {
     setPage: React.Dispatch<React.SetStateAction<number>>;
@@ -147,113 +147,45 @@ const Filter = ({ setPage }: Props) => {
                 </Box>
             </Box>
 
-            <Box className="flex flex-col space-y-2">
-                <Text className="text-gray-200">Colors</Text>
-                <Box className="flex flex-wrap gap-2">
-                    {['Black', 'Blue', 'Bronze', 'Crimson', 'Cyan', 'DarkGray', 'ForestGreen', 'Gold', 'Gray', 'Green', 'Lime', 'Orange', 'Pink', 'Purple', 'Red', 'Silver', 'Violet', 'Wheat', 'White', 'Yellow'].map((color) => (
-                        <Box
-                            key={color}
-                            onClick={() => toggleSelection('colors', color)}
-                            className={`cursor-pointer px-3 py-1 rounded-lg text-sm ${tempFilters.colors.includes(color)
-                                ? 'bg-gray-800 text-white'
-                                : 'bg-gray-600 text-white'
-                                } hover:bg-gray-700 hover:text-white`}
-                        >
-                            {color}
-                        </Box>
-                    ))}
-                </Box>
-                {tempFilters.colors.length > 0 && (
-                    <Button
-                        onClick={() => dispatch(clearFilter('colors'))}
-                        className="text-xs text-red-500 mt-2"
-                    >
-                        Clear Colors
-                    </Button>
-                )}
-            </Box>
+            <FilterList
+                title="Colors"
+                items={['Black', 'Blue', 'Bronze', 'Crimson', 'Cyan', 'DarkGray', 'ForestGreen', 'Gold', 'Gray', 'Green', 'Lime', 'Orange', 'Pink', 'Purple', 'Red', 'Silver', 'Violet', 'Wheat', 'White', 'Yellow']}
+                selectedItems={tempFilters.colors}
+                toggleSelection={toggleSelection}
+                clearFilter={clearFilter}
+                filterKey="colors"
+                isObject={false}
+            />
 
-            <Box className="flex flex-col space-y-2">
-                <Text className="text-gray-200">Conditions</Text>
-                <Box className="flex flex-wrap gap-2">
-                    {['Mint', 'VeryGood', 'Good', 'Acceptable', 'Damaged'].map((condition) => (
-                        <Box
-                            key={condition}
-                            onClick={() => toggleSelection('conditions', condition)}
-                            className={`cursor-pointer px-3 py-1 rounded-lg text-sm ${tempFilters.conditions.includes(condition)
-                                ? 'bg-gray-800 text-white'
-                                : 'bg-gray-600 text-white'
-                                } hover:bg-gray-700 hover:text-white`}
-                        >
-                            {condition}
-                        </Box>
-                    ))}
-                </Box>
-                {tempFilters.conditions.length > 0 && (
-                    <Button
-                        onClick={() => dispatch(clearFilter('conditions'))}
-                        className="text-xs text-red-500 mt-2"
-                    >
-                        Clear Conditions
-                    </Button>
-                )}
-            </Box>
+            <FilterList
+                title="Conditions"
+                items={['Mint', 'VeryGood', 'Good', 'Acceptable', 'Damaged']}
+                selectedItems={tempFilters.conditions}
+                toggleSelection={toggleSelection}
+                clearFilter={clearFilter}
+                filterKey={"conditions"}
+                isObject={false}
+            />
 
-            {categories.length > 0 && (
-                <Box className="flex flex-col space-y-2">
-                    <Text className="text-gray-200">Categories</Text>
-                    <Box className="flex flex-wrap gap-2">
-                        {categories.map((category) => (
-                            <Box
-                                key={category.id}
-                                onClick={() => toggleSelection('categories', category.id.toString())}
-                                className={`cursor-pointer px-3 py-1 rounded-lg text-sm ${tempFilters.categories.includes(category.id.toString())
-                                    ? 'bg-gray-800 text-white'
-                                    : 'bg-gray-600 text-white'
-                                    } hover:bg-gray-700 hover:text-white`}
-                            >
-                                {category.name}
-                            </Box>
-                        ))}
-                    </Box>
-                    {tempFilters.categories.length > 0 && (
-                        <Button
-                            onClick={() => dispatch(clearFilter('categories'))}
-                            className="text-xs text-red-500 mt-2"
-                        >
-                            Clear Categories
-                        </Button>
-                    )}
-                </Box>
-            )}
+            <FilterList
+                title="Categories"
+                items={categories}
+                selectedItems={tempFilters.categories}
+                toggleSelection={toggleSelection}
+                clearFilter={clearFilter}
+                filterKey={"categories"}
+                isObject={true}
+            />
 
-            {tags.length > 0 && (
-                <Box className="flex flex-col space-y-2">
-                    <Text className="text-gray-200">Tags</Text>
-                    <Box className="flex flex-wrap gap-2">
-                        {tags.map((tag: Tag) => (
-                            <Box
-                                key={tag.id}
-                                onClick={() => toggleSelection('tags', tag.id.toString())}
-                                className={`cursor-pointer px-3 py-1 rounded-lg text-sm ${tempFilters.tags.includes(tag.id.toString())
-                                    ? 'bg-gray-800 text-white'
-                                    : 'bg-gray-600 text-white'
-                                    } hover:bg-gray-700 hover:text-white`}
-                            >
-                                <ColorSwatch value={tag.hex} boxSize={"0.82em"} /> {tag.name}
-                            </Box>
-                        ))}
-                    </Box>
-                    {tempFilters.tags.length > 0 && (
-                        <Button
-                            onClick={() => dispatch(clearFilter('tags'))}
-                            className="text-xs text-red-500 mt-2"
-                        >
-                            Clear Tags
-                        </Button>
-                    )}
-                </Box>
-            )}
+            <FilterList
+                title="Tags"
+                items={tags}
+                selectedItems={tempFilters.tags}
+                toggleSelection={toggleSelection}
+                clearFilter={clearFilter}
+                filterKey={"tags"}
+                isObject={true}
+            />
 
             <Box className="flex flex-col space-y-2">
                 <Text className="text-gray-200">Patented</Text>
