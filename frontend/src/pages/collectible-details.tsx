@@ -6,8 +6,8 @@ import { Field } from '../components/ui/field';
 import { FaRegEdit } from 'react-icons/fa';
 import { useForm } from 'react-hook-form';
 import { mapColor, mapCondition } from '../utils/enum-mapper';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../state/store';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../state/store';
 import { deleteCollectible, updateCollectible } from '../state/collectibleSlice';
 import { useCollectibles } from '../hooks/useCollectibles';
 import { Collectible } from '../models/collectible';
@@ -15,8 +15,7 @@ import { useCategories } from '../hooks/useCategories';
 
 export const CollectibleDetails = () => {
     const { id, collectibleId } = useParams<{ id: string, collectibleId: string }>();
-    const { filters } = useSelector((state: RootState) => state.collectibles);
-    const collectibles = useCollectibles(Number(id), 1, 10, filters);
+    const { collectibles } = useCollectibles(Number(id), 1, 10);
     const collectible = collectibles.find(collectible => collectible.id == Number(collectibleId))
     const categories = useCategories();
     const [images, setImages] = useState<(File | string)[]>(

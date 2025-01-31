@@ -1,17 +1,20 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { api } from "../utils/api";
 import { Collection } from "../models/collection";
+import { RootState } from "./store";
 
 interface CollectionState {
-    collections: Collection[]
+    collections: Collection[],
+    status: 'idle' | 'pending' | 'succeeded' | 'failed'
 }
 
 const initialState: CollectionState = {
-    collections: []
+    collections: [],
+    status: 'idle'
 }
 
-export const getCollections = createAsyncThunk(
-    "collections/getCollections",
+export const fetchCollections = createAsyncThunk(
+    "collections/fetchCollections",
     async () => {
         const response = await api.get(`/collections`);
         return response.data;
@@ -48,8 +51,15 @@ const collectionSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(getCollections.fulfilled, (state, action) => {
+            .addCase(fetchCollections.pending, (state, action) => {
+                state.status = 'pending';
+            })
+            .addCase(fetchCollections.fulfilled, (state, action) => {
+                state.status = 'succeeded';
                 state.collections = action.payload;
+            })
+            .addCase(fetchCollections.rejected, (state, action) => {
+                state.status = 'failed';
             })
 
             .addCase(createCollection.fulfilled, (state, action) => {
@@ -70,4 +80,7 @@ const collectionSlice = createSlice({
 });
 
 export default collectionSlice.reducer;
+
+export const selectAllCollections = (state: RootState) => state.collections.collections;
+export const selectCollectionsStatus = (state: RootState) => state.collections.status;
 

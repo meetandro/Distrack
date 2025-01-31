@@ -1,15 +1,18 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getCollections } from "../state/collectionSlice";
-import { AppDispatch, RootState } from "../state/store";
+import { fetchCollections, selectAllCollections, selectCollectionsStatus } from "../state/collectionSlice";
+import { AppDispatch } from "../state/store";
 
 export const useCollections = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const { collections } = useSelector((state: RootState) => state.collections)
+    const collections = useSelector(selectAllCollections)
+    const collectionStatus = useSelector(selectCollectionsStatus)
 
     useEffect(() => {
-        dispatch(getCollections());
-    }, [dispatch])
+        if (collectionStatus === 'idle') {
+            dispatch(fetchCollections());
+        }
+    }, [dispatch, collectionStatus])
 
     return collections;
 }

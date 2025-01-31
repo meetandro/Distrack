@@ -17,16 +17,15 @@ import {
 } from '@chakra-ui/react';
 import { CloseButton } from '../ui/close-button';
 import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from '../ui/pagination';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../state/store';
 import { useCollectibles } from '../../hooks/useCollectibles';
 
 export const Collectibles = () => {
     const { id } = useParams<{ id: string }>();
     const [page, setPage] = useState<number>(1);
     const pageSize = 10;
-    const { totalCount, tempFilters } = useSelector((state: RootState) => state.collectibles);
-    const collectibles = useCollectibles(Number(id), page, pageSize, tempFilters);
+    const { collectibles, totalCount, status } = useCollectibles(Number(id), page, pageSize);
+
+    if (status === 'pending') return <>Loading...</>
 
     return (
         <Box>

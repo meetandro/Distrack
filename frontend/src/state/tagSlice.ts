@@ -1,17 +1,20 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Tag } from "../models/tag";
 import { api } from "../utils/api";
+import { RootState } from "./store";
 
 interface TagState {
-    tags: Tag[]
+    tags: Tag[],
+    status: 'idle' | 'pending' | 'succeeded' | 'failed'
 }
 
 const initialState: TagState = {
-    tags: []
+    tags: [],
+    status: 'idle'
 }
 
-export const getTags = createAsyncThunk(
-    "tags/getTags",
+export const fetchTags = createAsyncThunk(
+    "tags/fetchTags",
     async (collectionId: number) => {
         const response = await api.get(`/collections/${collectionId}/tags`);
         return response.data;
@@ -56,7 +59,7 @@ const tagSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(getTags.fulfilled, (state, action) => {
+            .addCase(fetchTags.fulfilled, (state, action) => {
                 state.tags = action.payload;
             })
 
@@ -78,4 +81,7 @@ const tagSlice = createSlice({
 });
 
 export default tagSlice.reducer;
+
+export const selectAllTags = (state: RootState) => state.tags.tags;
+export const selectTagsStatus = (state: RootState) => state.tags.status;
 

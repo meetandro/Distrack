@@ -1,11 +1,12 @@
 import { Box, Button, Text } from "@chakra-ui/react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AppDispatch, RootState } from "../../state/store";
 import { useDispatch, useSelector } from "react-redux";
-import { applyFilters, clearFilter, clearFilters, handleSortChange, handleSortOrderToggle, updateFilter } from "../../state/collectibleSlice";
+import { applyFilters } from "../../state/collectibleSlice";
 import { useCategories } from "../../hooks/useCategories";
 import { useTags } from "../../hooks/useTags";
 import { FilterList } from "./filter-list";
+import { useState } from "react";
 
 interface Props {
     setPage: React.Dispatch<React.SetStateAction<number>>;
@@ -14,9 +15,57 @@ interface Props {
 const Filter = ({ setPage }: Props) => {
     const { id } = useParams<{ id: string }>();
     const dispatch = useDispatch<AppDispatch>();
-    const { tempFilters } = useSelector((state: RootState) => state.collectibles);
+    const filters = useSelector((state: RootState) => state.collectibles.filters);
+    const [tempFilters, setTempFilters] = useState(filters);
     const categories = useCategories();
     const tags = useTags(Number(id));
+    const navigate = useNavigate();
+
+    const handleSortChange = (val: string) => {
+        setTempFilters(prevFilters => ({
+            ...prevFilters,
+            sortBy: val
+        }));
+    };
+
+    const handleSortOrderToggle = () => {
+        setTempFilters(prevFilters => ({
+            ...prevFilters,
+            sortOrder: prevFilters.sortOrder === "asc" ? "desc" : "asc"
+        }));
+    };
+
+    const updateFilter = (action: object) => {
+        setTempFilters(prevFilters => ({
+            ...prevFilters,
+            ...action
+        }));
+    }
+
+    const clearFilter = (key: string) => {
+        setTempFilters(prevFilters => ({
+            ...prevFilters,
+            [key]: ["colors", "conditions", "categories", "tags"].includes(key) ? [] : null,
+        }));
+    }
+
+    const clearFilters = () => {
+        setTempFilters({
+            searchQuery: "",
+            colors: [],
+            currency: "",
+            minValue: null,
+            maxValue: null,
+            conditions: [],
+            categories: [],
+            tags: [],
+            acquiredFrom: null,
+            acquiredTo: null,
+            isPatented: null,
+            sortBy: "",
+            sortOrder: "",
+        })
+    }
 
     const toggleSelection = (key: string, value: string) => {
         const currentSelection = tempFilters[key] || [];
@@ -25,15 +74,32 @@ const Filter = ({ setPage }: Props) => {
             ? currentSelection.filter((item: string) => item !== value) // Remove if already selected
             : [...currentSelection, value]; // Add if not selected
 
-        dispatch(updateFilter({ [key]: updatedSelection }));
+        updateFilter({ [key]: updatedSelection });
     };
 
     const toggleBooleanFilter = (key: string, value: boolean) => {
         if (tempFilters[key] === value) {
-            dispatch(updateFilter({ [key]: null }));
+            updateFilter({ [key]: null });
         } else {
-            dispatch(updateFilter({ [key]: value }));
+            updateFilter({ [key]: value });
         }
+    };
+
+    const updateUrlParams = () => {
+        const params = new URLSearchParams();
+
+        Object.entries(tempFilters).forEach(([key, value]) => {
+            if (Array.isArray(value)) {
+                value.forEach(v => params.append(key, v));
+            } else if (value !== null && value !== "") {
+                params.set(key, value.toString());
+            }
+        });
+
+        navigate({
+            pathname: location.pathname,
+            search: params.toString(),
+        }, { replace: true });
     };
 
     return (
@@ -45,12 +111,12 @@ const Filter = ({ setPage }: Props) => {
                         type="text"
                         placeholder="Search"
                         value={tempFilters.searchQuery}
-                        onChange={(e) => dispatch(updateFilter({ 'searchQuery': e.target.value }))}
+                        onChange={(e) => updateFilter({ 'searchQuery': e.target.value })}
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2"
                     />
                     {tempFilters.searchQuery && (
                         <button
-                            onClick={() => dispatch(clearFilter('searchQuery'))}
+                            onClick={() => clearFilter('searchQuery')}
                             className="text-xs text-red-500 mt-2"
                         >
                             Clear Search
@@ -63,12 +129,12 @@ const Filter = ({ setPage }: Props) => {
                         type="text"
                         placeholder="Currency"
                         value={tempFilters.currency}
-                        onChange={(e) => dispatch(updateFilter({ 'currency': e.target.value }))}
+                        onChange={(e) => updateFilter({ 'currency': e.target.value })}
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2"
                     />
                     {tempFilters.currency && (
                         <Button
-                            onClick={() => dispatch(clearFilter('currency'))}
+                            onClick={() => clearFilter('currency')}
                             className="text-xs text-red-500 mt-2"
                         >
                             Clear Currency
@@ -83,20 +149,20 @@ const Filter = ({ setPage }: Props) => {
                             type="number"
                             placeholder="Min"
                             value={tempFilters.minValue || ''}
-                            onChange={(e) => dispatch(updateFilter({ 'minValue': Number(e.target.value) }))}
+                            onChange={(e) => updateFilter({ 'minValue': Number(e.target.value) })}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2 w-1/4"
                         />
                         <input
                             type="number"
                             placeholder="Max"
                             value={tempFilters.maxValue || ''}
-                            onChange={(e) => dispatch(updateFilter({ 'maxValue': Number(e.target.value) }))}
+                            onChange={(e) => updateFilter({ 'maxValue': Number(e.target.value) })}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2 w-1/4"
                         />
                     </Box>
                     {tempFilters.minValue !== null && (
                         <Button
-                            onClick={() => dispatch(clearFilter('minValue'))}
+                            onClick={() => clearFilter('minValue')}
                             className="text-xs text-red-500 mt-2"
                         >
                             Clear Min Value
@@ -104,7 +170,7 @@ const Filter = ({ setPage }: Props) => {
                     )}
                     {tempFilters.maxValue !== null && (
                         <Button
-                            onClick={() => dispatch(clearFilter('maxValue'))}
+                            onClick={() => clearFilter('maxValue')}
                             className="text-xs text-red-500 mt-2"
                         >
                             Clear Max Value
@@ -118,19 +184,19 @@ const Filter = ({ setPage }: Props) => {
                         <input
                             type="date"
                             value={tempFilters.acquiredFrom || ''}
-                            onChange={(e) => dispatch(updateFilter({ 'acquiredFrom': e.target.value }))}
+                            onChange={(e) => updateFilter({ 'acquiredFrom': e.target.value })}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2 w-1/2"
                         />
                         <input
                             type="date"
                             value={tempFilters.acquiredTo || ''}
-                            onChange={(e) => dispatch(updateFilter({ 'acquiredTo': e.target.value }))}
+                            onChange={(e) => updateFilter({ 'acquiredTo': e.target.value })}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2 w-1/2"
                         />
                     </Box>
                     {tempFilters.acquiredFrom && (
                         <Button
-                            onClick={() => dispatch(clearFilter('acquiredFrom'))}
+                            onClick={() => clearFilter('acquiredFrom')}
                             className="text-xs text-red-500 mt-2"
                         >
                             Clear Acquired Date From
@@ -138,7 +204,7 @@ const Filter = ({ setPage }: Props) => {
                     )}
                     {tempFilters.acquiredTo && (
                         <Button
-                            onClick={() => dispatch(clearFilter('acquiredTo'))}
+                            onClick={() => clearFilter('acquiredTo')}
                             className="text-xs text-red-500 mt-2"
                         >
                             Clear Acquired Date To
@@ -211,7 +277,7 @@ const Filter = ({ setPage }: Props) => {
                 </Box>
                 {tempFilters.isPatented !== null && (
                     <Button
-                        onClick={() => dispatch(clearFilter('isPatented'))}
+                        onClick={() => clearFilter('isPatented')}
                         className="text-xs text-red-500 mt-2"
                     >
                         Clear Patented
@@ -222,7 +288,7 @@ const Filter = ({ setPage }: Props) => {
             <Box className="flex flex-col space-y-4 mt-4">
                 <select
                     value={tempFilters.sortBy}
-                    onChange={(e) => dispatch(handleSortChange(e.target.value))}
+                    onChange={(e) => handleSortChange(e.target.value)}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white p-3"
                 >
                     <option value="">Sort By</option>
@@ -232,7 +298,7 @@ const Filter = ({ setPage }: Props) => {
                 </select>
 
                 <Button
-                    onClick={() => dispatch(handleSortOrderToggle())}
+                    onClick={() => handleSortOrderToggle()}
                     className="py-2 px-4 text-sm font-medium bg-zinc-700 text-white rounded-lg hover:bg-zinc-800"
                 >
                     Order ({tempFilters.sortOrder.toUpperCase()})
@@ -240,14 +306,15 @@ const Filter = ({ setPage }: Props) => {
             </Box>
 
             <Button
-                onClick={() => { dispatch(applyFilters()); setPage(1); }}
+                onClick={() => { dispatch(applyFilters(tempFilters)); setPage(1); updateUrlParams() }}
                 className="py-2 px-4 mt-4 bg-zinc-700 text-white rounded-lg hover:bg-zinc-800"
             >
                 Apply
             </Button>
-            <Button className="bg-red-500 py-2 px-4 text-white rounded-lg hover:bg-red-600 ml-2" onClick={() => dispatch(clearFilters())}>Clear All</Button>
+            <Button className="bg-red-500 py-2 px-4 text-white rounded-lg hover:bg-red-600 ml-2" onClick={() => clearFilters()}>Clear All</Button>
         </Box >
     );
 };
 
 export default Filter;
+

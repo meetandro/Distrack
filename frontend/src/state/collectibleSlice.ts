@@ -1,32 +1,19 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { api } from "../utils/api";
 import { Collectible } from "../models/collectible";
+import { Filters } from "../models/filters";
+import { RootState } from "./store";
 
 interface CollectibleState {
     collectibles: Collectible[],
     totalCount: number,
-    tempFilters: any,
-    filters: any
+    filters: Filters,
+    status: 'idle' | 'pending' | 'succeeded' | 'failed'
 }
 
 const initialState: CollectibleState = {
     collectibles: [] as Collectible[],
     totalCount: 0,
-    tempFilters: {
-        searchQuery: "",
-        colors: [],
-        currency: "",
-        minValue: null,
-        maxValue: null,
-        conditions: [],
-        categories: [],
-        tags: [],
-        acquiredFrom: null,
-        acquiredTo: null,
-        isPatented: null,
-        sortBy: "",
-        sortOrder: "asc",
-    },
     filters: {
         searchQuery: "",
         colors: [],
@@ -41,7 +28,8 @@ const initialState: CollectibleState = {
         isPatented: null,
         sortBy: "",
         sortOrder: "asc",
-    }
+    },
+    status: 'idle'
 }
 
 export const fetchCollectibles = createAsyncThunk(
@@ -67,7 +55,7 @@ export const fetchCollectibles = createAsyncThunk(
             },
         });
         return response.data;
-    }
+    },
 );
 
 export const createCollectible = createAsyncThunk(
@@ -168,46 +156,22 @@ const collectibleSlice = createSlice({
     name: "collectibles",
     initialState,
     reducers: {
-        updateFilter: (state, action) => {
-            state.tempFilters = { ...state.tempFilters, ...action.payload };
-        },
-        clearFilter: (state, action) => {
-            const key = action.payload;
-            state.tempFilters[key] = ["colors", "conditions", "categories", "tags"].includes(key) ? [] : null;
-        },
-        clearFilters: (state) => {
-            state.filters = {
-                searchQuery: "",
-                colors: [],
-                currency: "",
-                minValue: null,
-                maxValue: null,
-                conditions: [],
-                categories: [],
-                tags: [],
-                acquiredFrom: null,
-                acquiredTo: null,
-                isPatented: null,
-                sortBy: "",
-                sortOrder: "asc",
-            };
-            state.tempFilters = state.filters;
-        },
-        applyFilters: (state) => {
-            state.filters = { ...state.tempFilters };
-        },
-        handleSortChange: (state, action) => {
-            state.tempFilters.sortBy = action.payload;
-        },
-        handleSortOrderToggle: (state) => {
-            state.tempFilters.sortOrder = state.tempFilters.sortOrder === "asc" ? "desc" : "asc";
+        applyFilters: (state, action) => {
+            state.filters = { ...action.payload };
         },
     },
     extraReducers: (builder) => {
         builder
+            .addCase(fetchCollectibles.pending, (state, action) => {
+                state.status = 'pending';
+            })
             .addCase(fetchCollectibles.fulfilled, (state, action) => {
+                state.status = 'succeeded';
                 state.collectibles = action.payload.items;
                 state.totalCount = action.payload.totalCount;
+            })
+            .addCase(fetchCollectibles.rejected, (state, action) => {
+                state.status = 'failed'
             })
 
             .addCase(updateCollectible.fulfilled, (state, action) => {
@@ -223,6 +187,11 @@ const collectibleSlice = createSlice({
     }
 });
 
-export const { updateFilter, clearFilter, clearFilters, applyFilters, handleSortChange, handleSortOrderToggle } = collectibleSlice.actions;
 export default collectibleSlice.reducer;
+
+export const { applyFilters } = collectibleSlice.actions;
+
+export const selectAllCollectibles = (state: RootState) => state.collectibles.collectibles
+export const selectCollectiblesStatus = (state: RootState) => state.collectibles.status
+export const selectCollectiblesTotalCount = (state: RootState) => state.collectibles.totalCount
 

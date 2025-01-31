@@ -1,17 +1,20 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Category } from "../models/category";
 import { api } from "../utils/api";
+import { RootState } from "./store";
 
 interface CategoryState {
-    categories: Category[]
+    categories: Category[],
+    status: 'idle' | 'pending' | 'succeeded' | 'failed'
 }
 
 const initialState: CategoryState = {
-    categories: []
+    categories: [],
+    status: 'idle'
 }
 
-export const getCategories = createAsyncThunk(
-    "categories/getCategories",
+export const fetchCategories = createAsyncThunk(
+    "categories/fetchCategories",
     async () => {
         const response = await api.get('/categories');
         return response.data;
@@ -48,8 +51,15 @@ const categorySlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(getCategories.fulfilled, (state, action) => {
+            .addCase(fetchCategories.pending, (state, action) => {
+                state.status = 'pending';
+            })
+            .addCase(fetchCategories.fulfilled, (state, action) => {
+                state.status = 'succeeded';
                 state.categories = action.payload;
+            })
+            .addCase(fetchCategories.rejected, (state, action) => {
+                state.status = 'failed';
             })
 
             .addCase(createCategory.fulfilled, (state, action) => {
@@ -70,4 +80,7 @@ const categorySlice = createSlice({
 });
 
 export default categorySlice.reducer;
+
+export const selectAllCategories = (state: RootState) => state.categories.categories;
+export const selectCategoriesStatus = (state: RootState) => state.categories.status;
 
