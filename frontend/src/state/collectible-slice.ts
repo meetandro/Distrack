@@ -89,49 +89,32 @@ export const createCollectible = createAsyncThunk(
 export const updateCollectible = createAsyncThunk(
     "collectibles/updateCollectible",
     async ({ data, images }: { data: Collectible, images: (string | File)[] }) => {
-        const existingUrls = images.filter((image) => typeof image === 'string') as string[];
-        const newFiles = images.filter((image) => image instanceof File) as File[];
-
-        const res = {
-            id: data.id,
-            name: data.name,
-            description: data.description,
-            color: data.color,
-            currency: data.currency,
-            value: data.value,
-            condition: data.condition,
-            acquiredDate: data.acquiredDate,
-            isPatented: data.isPatented,
-            categoryId: data.categoryId,
-            collectionId: data.collectionId,
-            existingImages: existingUrls,
-            newImages: newFiles,
-        }
-
         const formData = new FormData();
-        formData.append('id', res.id.toString());
-        formData.append('name', res.name);
-        formData.append('description', res.description ?? '');
-        formData.append('color', res.color?.toString() ?? '');
-        formData.append('currency', res.currency ?? '');
-        formData.append('value', res.value?.toString() ?? '');
-        formData.append('condition', res.condition?.toString() ?? '');
+        formData.append('id', data.id.toString());
+        formData.append('name', data.name);
+        formData.append('description', data.description ?? '');
+        formData.append('color', data.color?.toString() ?? '');
+        formData.append('currency', data.currency ?? '');
+        formData.append('value', data.value?.toString() ?? '');
+        formData.append('condition', data.condition?.toString() ?? '');
 
-        const date = new Date(res.acquiredDate);
+        const date = new Date(data.acquiredDate);
         formData.append('acquiredDate', date.toISOString());
 
-        formData.append('isPatented', res.isPatented?.toString() ?? '');
-        formData.append('collectionId', res.collectionId.toString());
-        formData.append('categoryId', res.categoryId.toString());
+        formData.append('isPatented', data.isPatented?.toString() ?? '');
+        formData.append('collectionId', data.collectionId.toString());
+        formData.append('categoryId', data.categoryId.toString());
 
-        if (res.existingImages && res.existingImages.length > 0) {
-            res.existingImages.forEach((imageUrl) => formData.append('existingImages', imageUrl));
+        const existingUrls = images.filter((image) => typeof image === 'string') as string[];
+        if (existingUrls && existingUrls.length > 0) {
+            existingUrls.forEach((imageUrl) => formData.append('existingImages', imageUrl));
         }
 
         formData.append('existingImages', '');
 
-        if (res.newImages && res.newImages.length > 0) {
-            res.newImages.forEach((image) => formData.append('newImages', image));
+        const newFiles = images.filter((image) => image instanceof File) as File[];
+        if (newFiles && newFiles.length > 0) {
+            newFiles.forEach((image) => formData.append('newImages', image));
         }
 
         const response = await api.put(`/collectibles/${data.id}`, formData, {
@@ -155,11 +138,7 @@ export const deleteCollectible = createAsyncThunk(
 const collectibleSlice = createSlice({
     name: "collectibles",
     initialState,
-    reducers: {
-        applyFilters: (state, action) => {
-            state.filters = { ...action.payload };
-        },
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(fetchCollectibles.pending, (state) => {
@@ -169,6 +148,7 @@ const collectibleSlice = createSlice({
                 state.status = 'succeeded';
                 state.collectibles = action.payload.items;
                 state.totalCount = action.payload.totalCount;
+                state.filters = action.meta.arg.filters
             })
             .addCase(fetchCollectibles.rejected, (state) => {
                 state.status = 'failed'
@@ -189,9 +169,8 @@ const collectibleSlice = createSlice({
 
 export default collectibleSlice.reducer;
 
-export const { applyFilters } = collectibleSlice.actions;
-
 export const selectAllCollectibles = (state: RootState) => state.collectibles.collectibles
-export const selectCollectiblesStatus = (state: RootState) => state.collectibles.status
 export const selectCollectiblesTotalCount = (state: RootState) => state.collectibles.totalCount
+export const selectCollectiblesFilters = (state: RootState) => state.collectibles.filters
+export const selectCollectiblesStatus = (state: RootState) => state.collectibles.status
 

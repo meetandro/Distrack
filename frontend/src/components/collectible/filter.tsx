@@ -1,12 +1,11 @@
 import { Box, Button, Text } from "@chakra-ui/react";
-import { useNavigate, useParams } from "react-router-dom";
-import { AppDispatch, RootState } from "../../state/store";
-import { useDispatch, useSelector } from "react-redux";
-import { applyFilters } from "../../state/collectible-slice";
+import { useParams, useSearchParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { useCategories } from "../../hooks/use-categories";
 import { useTags } from "../../hooks/use-tags";
 import { FilterList } from "./filter-list";
 import { useState } from "react";
+import { selectCollectiblesFilters } from "../../state/collectible-slice";
 
 interface Props {
     setPage: React.Dispatch<React.SetStateAction<number>>;
@@ -14,12 +13,11 @@ interface Props {
 
 const Filter = ({ setPage }: Props) => {
     const { id } = useParams<{ id: string }>();
-    const dispatch = useDispatch<AppDispatch>();
-    const filters = useSelector((state: RootState) => state.collectibles.filters);
+    const filters = useSelector(selectCollectiblesFilters)
     const [tempFilters, setTempFilters] = useState(filters);
     const categories = useCategories();
     const tags = useTags(Number(id));
-    const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const handleSortChange = (val: string) => {
         setTempFilters(prevFilters => ({
@@ -45,7 +43,7 @@ const Filter = ({ setPage }: Props) => {
     const clearFilter = (key: string) => {
         setTempFilters(prevFilters => ({
             ...prevFilters,
-            [key]: ["colors", "conditions", "categories", "tags"].includes(key) ? [] : null,
+            [key]: ["colors", "conditions", "categories", "tags"].includes(key) ? [] : ["searchQuery", "currency"].includes(key) ? "" : null,
         }));
     }
 
@@ -63,7 +61,7 @@ const Filter = ({ setPage }: Props) => {
             acquiredTo: null,
             isPatented: null,
             sortBy: "",
-            sortOrder: "",
+            sortOrder: "asc",
         })
     }
 
@@ -90,16 +88,15 @@ const Filter = ({ setPage }: Props) => {
 
         Object.entries(tempFilters).forEach(([key, value]) => {
             if (Array.isArray(value)) {
-                value.forEach(v => params.append(key, v));
+                if (value.length > 0) {
+                    params.set(key, value.join(','));
+                }
             } else if (value !== null && value !== "") {
                 params.set(key, value.toString());
             }
         });
 
-        navigate({
-            pathname: location.pathname,
-            search: params.toString(),
-        }, { replace: true });
+        setSearchParams(params);
     };
 
     return (
@@ -306,7 +303,7 @@ const Filter = ({ setPage }: Props) => {
             </Box>
 
             <Button
-                onClick={() => { dispatch(applyFilters(tempFilters)); setPage(1); updateUrlParams() }}
+                onClick={() => { setPage(1); updateUrlParams() }}
                 className="py-2 px-4 mt-4 bg-zinc-700 text-white rounded-lg hover:bg-zinc-800"
             >
                 Apply
