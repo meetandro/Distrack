@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import categoryReducer from "./categorySlice"
-import tagReducer from "./tagSlice"
-import collectionReducer from './collectionSlice'
-import collectibleReducer from './collectibleSlice'
+import categoryReducer from './category-slice'
+import tagReducer from "./tag-slice"
+import collectionReducer from './collection-slice'
+import collectibleReducer from './collectible-slice'
 
 export const store = configureStore({
     reducer: {

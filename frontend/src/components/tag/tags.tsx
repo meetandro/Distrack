@@ -13,8 +13,8 @@ import {
 import { TagForm } from './tag-form';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../state/store';
-import { deleteTag } from '../../state/tagSlice';
-import { useTags } from '../../hooks/useTags';
+import { deleteTag } from '../../state/tag-slice';
+import { useTags } from '../../hooks/use-tags';
 
 export const Tags = () => {
     const { id } = useParams<{ id: string }>();

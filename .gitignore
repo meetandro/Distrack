@@ -421,7 +421,7 @@ images/
 .DS_Store
 .env
 npm-debug.log
-Launcher/
+launch/
 
 # Logs
 logs

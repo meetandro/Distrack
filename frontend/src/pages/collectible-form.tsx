@@ -7,8 +7,8 @@ import { Box, Button, Input, Stack } from '@chakra-ui/react';
 import { Field } from '../components/ui/field';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../state/store';
-import { createCollectible } from '../state/collectibleSlice';
-import { useCategories } from '../hooks/useCategories';
+import { createCollectible } from '../state/collectible-slice';
+import { useCategories } from '../hooks/use-categories';
 
 export const CollectibleForm = () => {
     const { id } = useParams<{ id: string }>();

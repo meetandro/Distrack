@@ -8,10 +8,10 @@ import { useForm } from 'react-hook-form';
 import { mapColor, mapCondition } from '../utils/enum-mapper';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../state/store';
-import { deleteCollectible, updateCollectible } from '../state/collectibleSlice';
-import { useCollectibles } from '../hooks/useCollectibles';
+import { deleteCollectible, updateCollectible } from '../state/collectible-slice';
+import { useCollectibles } from '../hooks/use-collectibles';
 import { Collectible } from '../models/collectible';
-import { useCategories } from '../hooks/useCategories';
+import { useCategories } from '../hooks/use-categories';
 
 export const CollectibleDetails = () => {
     const { id, collectibleId } = useParams<{ id: string, collectibleId: string }>();
@@ -48,7 +48,7 @@ export const CollectibleDetails = () => {
 
     const onSubmit = (data: Collectible) => {
         setIsEditing(false);
-        dispatch(updateCollectible({ data: { ...data, id: collectibleId, collectionId: id, isPatented: checked }, images: images }));
+        dispatch(updateCollectible({ data: { ...data, id: Number(collectibleId), collectionId: Number(id), isPatented: checked }, images: images }));
         navigate(`/collections/${id}`)
     }
 

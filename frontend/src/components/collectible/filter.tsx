@@ -2,9 +2,9 @@ import { Box, Button, Text } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AppDispatch, RootState } from "../../state/store";
 import { useDispatch, useSelector } from "react-redux";
-import { applyFilters } from "../../state/collectibleSlice";
-import { useCategories } from "../../hooks/useCategories";
-import { useTags } from "../../hooks/useTags";
+import { applyFilters } from "../../state/collectible-slice";
+import { useCategories } from "../../hooks/use-categories";
+import { useTags } from "../../hooks/use-tags";
 import { FilterList } from "./filter-list";
 import { useState } from "react";
 

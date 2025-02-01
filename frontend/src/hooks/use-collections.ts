@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCollections, selectAllCollections, selectCollectionsStatus } from "../state/collectionSlice";
+import { fetchCollections, selectAllCollections, selectCollectionsStatus } from "../state/collection-slice";
 import { AppDispatch } from "../state/store";
 
 export const useCollections = () => {

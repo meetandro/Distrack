@@ -59,8 +59,15 @@ const tagSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
+            .addCase(fetchTags.pending, (state) => {
+                state.status = 'pending';
+            })
             .addCase(fetchTags.fulfilled, (state, action) => {
+                state.status = 'succeeded';
                 state.tags = action.payload;
+            })
+            .addCase(fetchTags.rejected, (state) => {
+                state.status = 'failed';
             })
 
             .addCase(createTag.fulfilled, (state, action) => {

@@ -34,7 +34,7 @@ const initialState: CollectibleState = {
 
 export const fetchCollectibles = createAsyncThunk(
     "collectibles/fetchCollectibles",
-    async ({ collectionId, page, pageSize, filters }: { collectionId: number; page: number; pageSize: number; filters: any }) => {
+    async ({ collectionId, page, pageSize, filters }: { collectionId: number; page: number; pageSize: number; filters: Filters }) => {
         const response = await api.get(`/collections/${collectionId}/collectibles`, {
             params: {
                 page,
@@ -60,7 +60,7 @@ export const fetchCollectibles = createAsyncThunk(
 
 export const createCollectible = createAsyncThunk(
     "collectibles/createCollectible",
-    async ({ data, images }: { data: Collectible, images: any }) => {
+    async ({ data, images }: { data: Collectible, images: File[] }) => {
         const formData = new FormData();
         formData.append('name', data.name);
         formData.append('description', data.description);
@@ -88,7 +88,7 @@ export const createCollectible = createAsyncThunk(
 
 export const updateCollectible = createAsyncThunk(
     "collectibles/updateCollectible",
-    async ({ data, images }: { data: any, images: any }) => {
+    async ({ data, images }: { data: Collectible, images: (string | File)[] }) => {
         const existingUrls = images.filter((image) => typeof image === 'string') as string[];
         const newFiles = images.filter((image) => image instanceof File) as File[];
 
@@ -162,7 +162,7 @@ const collectibleSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(fetchCollectibles.pending, (state, action) => {
+            .addCase(fetchCollectibles.pending, (state) => {
                 state.status = 'pending';
             })
             .addCase(fetchCollectibles.fulfilled, (state, action) => {
@@ -170,7 +170,7 @@ const collectibleSlice = createSlice({
                 state.collectibles = action.payload.items;
                 state.totalCount = action.payload.totalCount;
             })
-            .addCase(fetchCollectibles.rejected, (state, action) => {
+            .addCase(fetchCollectibles.rejected, (state) => {
                 state.status = 'failed'
             })
 

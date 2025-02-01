@@ -14,7 +14,7 @@ import {
 import { Link } from 'react-router-dom';
 import { CollectionForm } from '../components/collection/collection-form';
 import { FaPlus } from 'react-icons/fa';
-import { useCollections } from '../hooks/useCollections';
+import { useCollections } from '../hooks/use-collections';
 
 export const Collections = () => {
     const collections = useCollections();

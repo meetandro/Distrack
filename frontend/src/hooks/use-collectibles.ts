@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../state/store";
-import { applyFilters, fetchCollectibles, selectAllCollectibles, selectCollectiblesStatus, selectCollectiblesTotalCount } from "../state/collectibleSlice";
+import { applyFilters, fetchCollectibles, selectAllCollectibles, selectCollectiblesStatus, selectCollectiblesTotalCount } from "../state/collectible-slice";
 
 export const useCollectibles = (collectionId: number, page: number, pageSize: number) => {
     const dispatch = useDispatch<AppDispatch>();

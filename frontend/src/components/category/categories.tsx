@@ -4,8 +4,8 @@ import { Box, Text, SimpleGrid, GridItem, Button } from '@chakra-ui/react';
 import { CategoryForm } from './category-form';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../state/store';
-import { deleteCategory } from '../../state/categorySlice';
-import { useCategories } from '../../hooks/useCategories';
+import { deleteCategory } from '../../state/category-slice';
+import { useCategories } from '../../hooks/use-categories';
 
 export const Categories = () => {
     const dispatch = useDispatch<AppDispatch>();

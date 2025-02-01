@@ -5,7 +5,7 @@ import { Tag } from "../../models/tag";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../state/store";
-import { createTag, updateTag } from "../../state/tagSlice";
+import { createTag, updateTag } from "../../state/tag-slice";
 
 interface Props {
     existingTag?: Tag | null;

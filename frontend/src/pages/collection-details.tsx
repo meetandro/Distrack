@@ -7,7 +7,7 @@ import { BiHome } from 'react-icons/bi';
 import { CiSettings } from 'react-icons/ci';
 import { IoIosAddCircleOutline } from 'react-icons/io';
 import { FaArrowRight } from 'react-icons/fa';
-import { useCollections } from '../hooks/useCollections';
+import { useCollections } from '../hooks/use-collections';
 
 export const CollectionDetails = () => {
     const { id } = useParams<{ id: string }>();

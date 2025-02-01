@@ -6,9 +6,9 @@ import { Checkbox } from '../ui/checkbox';
 import { Tag } from '../../models/tag';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../state/store';
-import { addTagsToCollectible } from '../../state/tagSlice';
+import { addTagsToCollectible } from '../../state/tag-slice';
 import { Collectible } from '../../models/collectible';
-import { useTags } from '../../hooks/useTags';
+import { useTags } from '../../hooks/use-tags';
 
 interface Props {
     collectible: Collectible;

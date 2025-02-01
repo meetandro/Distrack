@@ -51,14 +51,14 @@ const collectionSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(fetchCollections.pending, (state, action) => {
+            .addCase(fetchCollections.pending, (state) => {
                 state.status = 'pending';
             })
             .addCase(fetchCollections.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.collections = action.payload;
             })
-            .addCase(fetchCollections.rejected, (state, action) => {
+            .addCase(fetchCollections.rejected, (state) => {
                 state.status = 'failed';
             })
 

@@ -13,11 +13,12 @@ import {
     DrawerRoot,
     DrawerTrigger,
     HStack,
-    IconButton
+    IconButton,
+    Spinner
 } from '@chakra-ui/react';
 import { CloseButton } from '../ui/close-button';
 import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from '../ui/pagination';
-import { useCollectibles } from '../../hooks/useCollectibles';
+import { useCollectibles } from '../../hooks/use-collectibles';
 
 export const Collectibles = () => {
     const { id } = useParams<{ id: string }>();
@@ -25,7 +26,7 @@ export const Collectibles = () => {
     const pageSize = 10;
     const { collectibles, totalCount, status } = useCollectibles(Number(id), page, pageSize);
 
-    if (status === 'pending') return <>Loading...</>
+    if (status === 'pending') return <Spinner size={'sm'} />
 
     return (
         <Box>

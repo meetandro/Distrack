@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../state/store";
-import { fetchTags, selectAllTags, selectTagsStatus } from "../state/tagSlice";
+import { fetchTags, selectAllTags, selectTagsStatus } from "../state/tag-slice";
 
 export const useTags = (collectionId: number) => {
     const dispatch = useDispatch<AppDispatch>();

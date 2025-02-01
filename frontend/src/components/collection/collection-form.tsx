@@ -4,7 +4,7 @@ import { Collection } from "../../models/collection";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../state/store";
-import { createCollection } from "../../state/collectionSlice";
+import { createCollection } from "../../state/collection-slice";
 
 interface Props {
     onClose: () => void;

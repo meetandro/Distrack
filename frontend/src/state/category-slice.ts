@@ -51,14 +51,14 @@ const categorySlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(fetchCategories.pending, (state, action) => {
+            .addCase(fetchCategories.pending, (state) => {
                 state.status = 'pending';
             })
             .addCase(fetchCategories.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.categories = action.payload;
             })
-            .addCase(fetchCategories.rejected, (state, action) => {
+            .addCase(fetchCategories.rejected, (state) => {
                 state.status = 'failed';
             })
 

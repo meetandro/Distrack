@@ -5,7 +5,7 @@ import { Box, Button, Editable, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaCheck, FaTrash } from 'react-icons/fa';
-import { deleteCollection, updateCollection } from '../../state/collectionSlice';
+import { deleteCollection, updateCollection } from '../../state/collection-slice';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../state/store';
 

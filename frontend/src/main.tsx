@@ -5,7 +5,7 @@ import { Provider } from 'react-redux'
 import { store } from './state/store.ts'
 import './index.css'
 import App from './App.tsx'
-import { fetchCollections } from './state/collectionSlice.ts'
+import { fetchCollections } from './state/collection-slice.ts'
 
 async function start() {
     store.dispatch(fetchCollections())

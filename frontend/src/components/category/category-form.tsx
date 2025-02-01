@@ -4,7 +4,7 @@ import { Category } from "../../models/category";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../state/store";
-import { createCategory, updateCategory } from "../../state/categorySlice";
+import { createCategory, updateCategory } from "../../state/category-slice";
 
 interface Props {
     existingCategory?: Category | null;
