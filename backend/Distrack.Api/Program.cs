@@ -32,6 +32,8 @@ builder.Services.AddInfrastructure(builder.Configuration, webRootPath =>
     return env.WebRootPath;
 });
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -52,6 +54,8 @@ app.MapCategoryEndpoints();
 app.MapCollectibleEndpoints();
 app.MapCollectionEndpoints();
 app.MapTagEndpoints();
+
+app.MapHealthChecks("api/health");
 
 app.UseCors("AllowSpecificOrigin");
 
