@@ -27,7 +27,7 @@ export const CollectibleForm = () => {
             currency: '',
             value: 0,
             condition: 0,
-            acquiredDate: new Date(),
+            acquiredDate: new Date().toISOString().slice(0, 10),
             isPatented: false,
             collectionId: Number(id),
             categoryId: 0,

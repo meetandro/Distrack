@@ -1,6 +1,5 @@
 import { useForm } from 'react-hook-form';
 import { Collection } from '../../models/collection';
-import { formatDate } from '../../utils/format-date';
 import { Box, Button, Editable, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -17,7 +16,6 @@ export const CollectionDetailsCard = ({ collection }: Props) => {
     const { register, handleSubmit } = useForm<Collection>({
         defaultValues: collection
     });
-    const formattedDate = formatDate(collection.createdDate);
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
 
@@ -28,19 +26,19 @@ export const CollectionDetailsCard = ({ collection }: Props) => {
     }
 
     return (
-        <Box className="bg-zinc-800 p-3 rounded-lg shadow-lg mt-2">
+        <Box className="bg-zinc-800 p-3 rounded-lg shadow-lg mt-4">
             <form onSubmit={handleSubmit(onSubmit)}>
-                <Editable.Root className='hover:text-black' {...register("name")} defaultValue={collection.name}>
-                    <Editable.Preview />
-                    <Editable.Input />
+                <Editable.Root {...register("name")} defaultValue={collection.name}>
+                    <Editable.Preview className='hover:bg-zinc-700' />
+                    <Editable.Input className='bg-zinc-700' />
                 </Editable.Root>
 
-                <Editable.Root className='hover:text-black' {...register("description")} defaultValue={collection.description}>
-                    <Editable.Preview />
-                    <Editable.Input />
+                <Editable.Root className='mt-2' {...register("description")} defaultValue={collection.description}>
+                    <Editable.Preview className='hover:bg-zinc-700' />
+                    <Editable.Input className='bg-zinc-700' />
                 </Editable.Root>
 
-                <Text className='mb-2'>Created at {formattedDate}</Text>
+                <Text className='mb-2'>Created at {collection.createdDate.slice(0, 10)}</Text>
 
                 <Button className='bg-green-500 p-5 hover:bg-green-600' type='submit'>
                     <FaCheck />

@@ -58,9 +58,6 @@ export const CollectibleDetails = () => {
         }
     }, [collectible])
 
-    const acquiredDate = collectible?.acquiredDate ? new Date(collectible.acquiredDate) : new Date();
-    const formattedDate = acquiredDate.toISOString();
-
     if (!collectible) return <p>Loading...</p>;
 
     return (
@@ -137,7 +134,7 @@ export const CollectibleDetails = () => {
                                 <Field label="Acquired Date">
                                     <Input
                                         {...register("acquiredDate")}
-                                        defaultValue={formattedDate.substring(0, 10)}
+                                        defaultValue={collectible.acquiredDate.slice(0, 10)}
                                         _disabled={{
                                             color: 'white',
                                             opacity: 1,

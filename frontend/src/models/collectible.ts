@@ -6,7 +6,7 @@ export interface Collectible {
     currency: string;
     value: number;
     condition: number;
-    acquiredDate: Date;
+    acquiredDate: string;
     isPatented: boolean;
     collectionId: number;
     categoryId: number;

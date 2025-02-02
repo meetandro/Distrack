@@ -16,7 +16,7 @@ export const CollectionForm = ({ onClose }: Props) => {
             id: 0,
             name: '',
             description: '',
-            createdDate: new Date(),
+            createdDate: new Date().toISOString().slice(0, 10),
             collectibles: [],
         }
     });

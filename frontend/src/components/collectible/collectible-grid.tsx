@@ -25,7 +25,7 @@ export const CollectibleGrid = ({ collectionId, collectibles }: Props) => {
                         className="bg-zinc-800 p-4 rounded-lg shadow-lg text-gray-100 flex flex-col md:flex-row gap-4"
                     >
                         {collectible.images && collectible.images.length > 0 && (
-                            <ImageSlider images={collectible.images} />
+                            <ImageSlider images={collectible.images} collectionId={collectionId} collectibleId={collectible.id} />
                         )}
 
                         <Box className="flex-1 max-h-full">

@@ -68,10 +68,7 @@ export const createCollectible = createAsyncThunk(
         formData.append('currency', data.currency);
         formData.append('value', data.value.toString());
         formData.append('condition', data.condition.toString());
-
-        const date = new Date(data.acquiredDate);
-        formData.append('acquiredDate', date.toISOString());
-
+        formData.append('acquiredDate', data.acquiredDate);
         formData.append('isPatented', data.isPatented.toString());
         formData.append('collectionId', data.collectionId.toString());
         formData.append('categoryId', data.categoryId.toString());
@@ -97,10 +94,7 @@ export const updateCollectible = createAsyncThunk(
         formData.append('currency', data.currency ?? '');
         formData.append('value', data.value?.toString() ?? '');
         formData.append('condition', data.condition?.toString() ?? '');
-
-        const date = new Date(data.acquiredDate);
-        formData.append('acquiredDate', date.toISOString());
-
+        formData.append('acquiredDate', data.acquiredDate);
         formData.append('isPatented', data.isPatented?.toString() ?? '');
         formData.append('collectionId', data.collectionId.toString());
         formData.append('categoryId', data.categoryId.toString());
@@ -109,7 +103,6 @@ export const updateCollectible = createAsyncThunk(
         if (existingUrls && existingUrls.length > 0) {
             existingUrls.forEach((imageUrl) => formData.append('existingImages', imageUrl));
         }
-
         formData.append('existingImages', '');
 
         const newFiles = images.filter((image) => image instanceof File) as File[];

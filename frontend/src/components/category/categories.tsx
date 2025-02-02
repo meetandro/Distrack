@@ -1,16 +1,24 @@
 import { useState } from 'react';
-import { Category } from '../../models/category';
-import { Box, Text, SimpleGrid, GridItem, Button } from '@chakra-ui/react';
+import { Box, Text, SimpleGrid, GridItem, Button, DialogBody, DialogContent, DialogRoot, DialogTrigger } from '@chakra-ui/react';
 import { CategoryForm } from './category-form';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../state/store';
 import { deleteCategory } from '../../state/category-slice';
 import { useCategories } from '../../hooks/use-categories';
+import { Category } from '../../models/category';
 
 export const Categories = () => {
-    const dispatch = useDispatch<AppDispatch>();
     const categories = useCategories();
-    const [activeCategory, setActiveCategory] = useState<Category | null | undefined>(undefined);
+    const dispatch = useDispatch<AppDispatch>();
+
+    const [openCreate, setOpenCreate] = useState<boolean>(false);
+    const [openUpdate, setOpenUpdate] = useState<boolean>(false);
+    const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+
+    const handleEditClick = (category: Category) => {
+        setSelectedCategory(category);
+        setOpenUpdate(true);
+    };
 
     return (
         <Box>
@@ -22,18 +30,33 @@ export const Categories = () => {
                             <Text>{category.name}</Text>
                         </Box>
                         <Box width={'2/12'}>
-                            <Button bg={'green'} onClick={() => setActiveCategory(category)}>Edit</Button>
+                            <DialogRoot open={openUpdate} onOpenChange={(e) => setOpenUpdate(e.open)}>
+                                <DialogTrigger asChild>
+                                    <Button bg={'green'} onClick={() => handleEditClick(category)}>Edit</Button>
+                                </DialogTrigger>
+                                <DialogContent className='fixed inset-0 bg-zinc-800 border-2 border-zinc-600'>
+                                    <DialogBody>
+                                        {selectedCategory && <CategoryForm existingCategory={selectedCategory} onClose={() => setOpenUpdate(false)} />}
+                                    </DialogBody>
+                                </DialogContent>
+                            </DialogRoot>
                             <Button bg={'red'} float={'right'} onClick={() => dispatch(deleteCategory(category.id))}>Delete</Button>
                         </Box>
                     </GridItem>
                 ))}
             </SimpleGrid>
 
-            <Button onClick={() => setActiveCategory(null)}>Create a New Category</Button>
-
-            {activeCategory !== undefined && (
-                <CategoryForm existingCategory={activeCategory} onClose={() => setActiveCategory(undefined)} />
-            )}
+            <DialogRoot open={openCreate} onOpenChange={(e) => setOpenCreate(e.open)}>
+                <DialogTrigger asChild>
+                    <Button>Create a New Category</Button>
+                </DialogTrigger>
+                <DialogContent className='fixed inset-0 bg-zinc-800 border-2 border-zinc-600'>
+                    <DialogBody>
+                        <CategoryForm onClose={() => setOpenCreate(false)} />
+                    </DialogBody>
+                </DialogContent>
+            </DialogRoot>
         </Box>
     );
 };
+

@@ -1,7 +1,8 @@
 import { Box, Button, Image } from "@chakra-ui/react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
-export const ImageSlider = ({ images }: { images: string[] }) => {
+export const ImageSlider = ({ images, collectionId, collectibleId }: { images: string[], collectionId: number, collectibleId: number }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const handlePrev = () => {
@@ -14,24 +15,27 @@ export const ImageSlider = ({ images }: { images: string[] }) => {
 
     return (
         <Box className="relative inline-block">
-            <Image
-                src={`https://localhost:5001${images[currentIndex]}`}
-                alt={`Image ${currentIndex + 1}`}
-                height={200}
-                width={150}
-                className="object-contain rounded-lg max-h-96"
-            />
+            <Link to={`/collections/${collectionId}/collectibles/${collectibleId}`}>
+                <Image
+                    src={`https://localhost:5001${images[currentIndex]}`}
+                    alt={`Image ${currentIndex + 1}`}
+                    height={200}
+                    width={150}
+                    className="object-contain rounded-lg max-h-96"
+                />
+            </Link>
+
             {images.length > 1 && (
-                <Box className="absolute inset-0 w-full h-full opacity-0 hover:opacity-100 flex justify-between items-center">
+                <Box className="absolute inset-0 pointer-events-none w-full h-full opacity-0 hover:opacity-100 flex justify-between items-center">
                     <Button
                         onClick={handlePrev}
-                        className="bg-opacity-75 ml-3 bg-zinc-800 hover:bg-zinc-900 rounded-sm text-white"
+                        className="bg-opacity-75 pointer-events-auto ml-3 bg-zinc-800 hover:bg-zinc-900 rounded-sm text-white"
                     >
                         ❮
                     </Button>
                     <Button
                         onClick={handleNext}
-                        className="bg-opacity-75 mr-3 bg-zinc-800 hover:bg-zinc-900 rounded-sm text-white"
+                        className="bg-opacity-75 pointer-events-auto mr-3 bg-zinc-800 hover:bg-zinc-900 rounded-sm text-white"
                     >
                         ❯
                     </Button>
@@ -40,3 +44,4 @@ export const ImageSlider = ({ images }: { images: string[] }) => {
         </Box>
     );
 };
+
