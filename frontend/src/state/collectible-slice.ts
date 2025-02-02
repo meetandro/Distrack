@@ -79,7 +79,7 @@ export const createCollectible = createAsyncThunk(
                 'Content-Type': 'multipart/form-data',
             },
         });
-        return { ...data, id: response.data };
+        return { ...data, id: response.data } as Collectible;
     }
 )
 
@@ -145,6 +145,10 @@ const collectibleSlice = createSlice({
             })
             .addCase(fetchCollectibles.rejected, (state) => {
                 state.status = 'failed'
+            })
+
+            .addCase(createCollectible.fulfilled, (state, action) => {
+                state.collectibles.push(action.payload)
             })
 
             .addCase(updateCollectible.fulfilled, (state, action) => {
