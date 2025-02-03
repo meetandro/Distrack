@@ -58,7 +58,7 @@ export const CollectibleDetails = () => {
         }
     }, [collectible])
 
-    if (!collectible) return <p>Loading...</p>;
+    if (!collectible || !collectible.tags) return <p>Loading...</p>;
 
     return (
         <Box className="flex items-center justify-center min-h-screen">
