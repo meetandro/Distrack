@@ -6,7 +6,6 @@ import { Collections } from './pages/collections'
 import { CollectibleForm } from './pages/collectible-form'
 
 function App() {
-
     return (
         <BrowserRouter>
             <Routes>

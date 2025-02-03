@@ -21,7 +21,7 @@ export const Categories = () => {
     };
 
     return (
-        <Box>
+        <Box className="w-1/2 bg-gray-800 p-6 rounded-lg shadow-lg text-gray-100">
             <Text as={'h2'}>Global Categories</Text>
             <SimpleGrid gap={5}>
                 {categories.map((category) => (
@@ -34,7 +34,7 @@ export const Categories = () => {
                                 <DialogTrigger asChild>
                                     <Button bg={'green'} onClick={() => handleEditClick(category)}>Edit</Button>
                                 </DialogTrigger>
-                                <DialogContent className='fixed inset-0 bg-zinc-800 border-2 border-zinc-600'>
+                                <DialogContent className='fixed top-0 left-0 right-0 bg-zinc-800 border-2 border-zinc-600'>
                                     <DialogBody>
                                         {selectedCategory && <CategoryForm existingCategory={selectedCategory} onClose={() => setOpenUpdate(false)} />}
                                     </DialogBody>
@@ -50,7 +50,7 @@ export const Categories = () => {
                 <DialogTrigger asChild>
                     <Button>Create a New Category</Button>
                 </DialogTrigger>
-                <DialogContent className='fixed inset-0 bg-zinc-800 border-2 border-zinc-600'>
+                <DialogContent className='fixed top-0 right-0 left-0 bg-zinc-800 border-2 border-zinc-600'>
                     <DialogBody>
                         <CategoryForm onClose={() => setOpenCreate(false)} />
                     </DialogBody>

@@ -34,7 +34,7 @@ export const Tags = () => {
     };
 
     return (
-        <Box>
+        <Box className="w-1/2 bg-gray-800 p-6 rounded-lg shadow-lg text-gray-100">
             <Text className="text-xl font-semibold">Tags for Collection {id}</Text>
             <SimpleGrid gap={5}>
                 {tags.map((tag: Tag) => (
@@ -50,7 +50,7 @@ export const Tags = () => {
                                         Edit
                                     </Button>
                                 </DialogTrigger>
-                                <DialogContent className='fixed inset-0 bg-zinc-800 border-2 border-zinc-600'>
+                                <DialogContent className='fixed top-0 left-0 right-0 bg-zinc-800 border-2 border-zinc-600'>
                                     <DialogBody>
                                         {selectedTag && <TagForm existingTag={selectedTag} onClose={() => setOpenUpdate(false)} />}
                                     </DialogBody>
@@ -75,7 +75,7 @@ export const Tags = () => {
                         Create Tag
                     </Button>
                 </DialogTrigger>
-                <DialogContent className='fixed inset-0 bg-zinc-800 border-2 border-zinc-600'>
+                <DialogContent className='fixed top-0 right-0 left-0 bg-zinc-800 border-2 border-zinc-600'>
                     <DialogBody>
                         <TagForm onClose={() => setOpenCreate(false)} />
                     </DialogBody>
