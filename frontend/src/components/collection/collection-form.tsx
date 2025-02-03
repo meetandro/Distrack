@@ -1,10 +1,15 @@
-import { Button, Center, Input, Stack } from "@chakra-ui/react";
-import { Field } from "../ui/field";
-import { Collection } from "../../models/collection";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../state/store";
 import { createCollection } from "../../state/collection-slice";
+import { Collection } from "../../models/collection";
+import { Field } from "../ui/field";
+import {
+    Button,
+    Center,
+    Input,
+    Stack
+} from "@chakra-ui/react";
 
 interface Props {
     onClose: () => void;
@@ -30,26 +35,44 @@ export const CollectionForm = ({ onClose }: Props) => {
     }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-white">
+        <form onSubmit={handleSubmit(onSubmit)}>
             <Stack>
                 <Field label="Name" required>
                     <Input
                         {...register("name")}
                         type="text"
-                        className="border-2 p-2 border-zinc-600"
+                        borderWidth={2}
+                        p={2}
+                        bg="gray.800"
+                        borderColor="gray.600"
                     />
                 </Field>
                 <Field label="Description">
                     <Input
                         {...register("description")}
                         type="text"
-                        className="border-2 p-2 border-zinc-600"
+                        borderWidth={2}
+                        p={2}
+                        bg="gray.800"
+                        borderColor="gray.600"
                     />
                 </Field>
             </Stack>
             <Center>
-                <Button type="submit" className="p-5 bg-zinc-600 hover:bg-zinc-700">Create</Button>
+                <Button
+                    type="submit"
+                    p={5}
+                    bg="gray.600"
+                    color="white"
+                    _hover={{
+                        bg: "green.500"
+                    }}
+                    marginTop={5}
+                >
+                    Create
+                </Button>
             </Center>
         </form>
     );
 };
+

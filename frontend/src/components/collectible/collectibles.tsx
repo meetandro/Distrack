@@ -1,8 +1,11 @@
-import { useParams } from 'react-router-dom';
-import Filter from './filter';
-import { CiFilter } from "react-icons/ci";
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { CiFilter } from "react-icons/ci";
 import { CollectibleGrid } from './collectible-grid';
+import Filter from './filter';
+import { useCollectibles } from '../../hooks/use-collectibles';
+import { CloseButton } from '../ui/close-button';
+import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from '../ui/pagination';
 import {
     Box,
     Center,
@@ -12,13 +15,11 @@ import {
     DrawerContent,
     DrawerRoot,
     DrawerTrigger,
+    Float,
     HStack,
-    IconButton,
+    Icon,
     Spinner
 } from '@chakra-ui/react';
-import { CloseButton } from '../ui/close-button';
-import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from '../ui/pagination';
-import { useCollectibles } from '../../hooks/use-collectibles';
 
 export const Collectibles = () => {
     const { id } = useParams<{ id: string }>();
@@ -26,21 +27,26 @@ export const Collectibles = () => {
     const pageSize = 10;
     const { collectibles, totalCount, status } = useCollectibles(Number(id), page, pageSize);
 
-    if (status === 'pending') return <Spinner size={'sm'} />
+    if (status === 'pending') return <Spinner />
 
     return (
         <Box>
-            <DrawerRoot placement={'start'}>
+            <DrawerRoot placement='start'>
                 <DrawerBackdrop />
                 <DrawerTrigger asChild>
-                    <IconButton className='fixed top-3 left-4 text-white'>
-                        <CiFilter size={20} />
-                    </IconButton>
+                    <Float placement="top-start" position="fixed" offsetX={8} offsetY={8} color="white">
+                        <Icon as={CiFilter} cursor="pointer" size="md" />
+                    </Float>
+
                 </DrawerTrigger>
-                <DrawerContent className='rounded-md bg-zinc-900 fixed'>
+                <DrawerContent
+                    position="fixed"
+                    rounded="md"
+                    bg="gray.900"
+                >
                     <DrawerBody>
                         <DrawerActionTrigger asChild>
-                            <CloseButton color={'white'} />
+                            <CloseButton />
                         </DrawerActionTrigger>
                         <Filter setPage={setPage} />
                     </DrawerBody>
@@ -51,12 +57,12 @@ export const Collectibles = () => {
 
             <Center>
                 <PaginationRoot
-                    className='text-white'
                     count={totalCount}
                     pageSize={pageSize}
                     page={page}
                     siblingCount={5}
                     onPageChange={(e) => setPage(e.page)}
+                    color="white"
                 >
                     <HStack>
                         <PaginationPrevTrigger />
@@ -68,3 +74,4 @@ export const Collectibles = () => {
         </Box>
     );
 };
+

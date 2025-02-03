@@ -1,11 +1,17 @@
-import { Box, Button, Text } from "@chakra-ui/react";
+import { useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useCategories } from "../../hooks/use-categories";
 import { useTags } from "../../hooks/use-tags";
-import { FilterList } from "./filter-list";
-import { useState } from "react";
 import { selectCollectiblesFilters } from "../../state/collectible-slice";
+import { FilterList } from "./filter-list";
+import {
+    Box,
+    Button,
+    Input,
+    Stack,
+    Text
+} from "@chakra-ui/react";
 
 interface Props {
     setPage: React.Dispatch<React.SetStateAction<number>>;
@@ -100,67 +106,72 @@ const Filter = ({ setPage }: Props) => {
     };
 
     return (
-        <Box className="space-y-4">
-            <Text className="text-lg font-semibold text-gray-100">Filters</Text>
-            <Box className="flex flex-col space-y-4">
-                <Box className="flex flex-col">
-                    <input
+        <Box spaceY={4}>
+            <Text
+                fontSize="lg"
+                fontWeight="semibold"
+            >
+                Filters
+            </Text>
+            <Stack gap={4}>
+                <Stack>
+                    <Input
                         type="text"
                         placeholder="Search"
                         value={tempFilters.searchQuery}
                         onChange={(e) => updateFilter({ 'searchQuery': e.target.value })}
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2"
+                        borderColor="gray.600"
                     />
                     {tempFilters.searchQuery && (
-                        <button
+                        <Button
                             onClick={() => clearFilter('searchQuery')}
-                            className="text-xs text-red-500 mt-2"
+                            bg="none"
+                            fontSize="xs"
+                            color="red.500"
                         >
                             Clear Search
-                        </button>
+                        </Button>
                     )}
-                </Box>
-
-                <Box className="flex flex-col">
-                    <input
+                    <Input
                         type="text"
                         placeholder="Currency"
                         value={tempFilters.currency}
                         onChange={(e) => updateFilter({ 'currency': e.target.value })}
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2"
+                        borderColor="gray.600"
                     />
                     {tempFilters.currency && (
                         <Button
                             onClick={() => clearFilter('currency')}
-                            className="text-xs text-red-500 mt-2"
+                            bg="none"
+                            fontSize="xs"
+                            color="red.500"
                         >
                             Clear Currency
                         </Button>
                     )}
-                </Box>
-
-                <Box className="flex flex-col space-y-2">
-                    <Text className="text-gray-200">Value</Text>
-                    <Box className="w-full flex gap-2">
-                        <input
+                    <Text color="gray.200">Value</Text>
+                    <Stack direction="row" gap={2}>
+                        <Input
                             type="number"
                             placeholder="Min"
                             value={tempFilters.minValue || ''}
                             onChange={(e) => updateFilter({ 'minValue': Number(e.target.value) })}
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2 w-1/4"
+                            borderColor="gray.600"
                         />
-                        <input
+                        <Input
                             type="number"
                             placeholder="Max"
                             value={tempFilters.maxValue || ''}
                             onChange={(e) => updateFilter({ 'maxValue': Number(e.target.value) })}
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2 w-1/4"
+                            borderColor="gray.600"
                         />
-                    </Box>
+                    </Stack>
                     {tempFilters.minValue !== null && (
                         <Button
                             onClick={() => clearFilter('minValue')}
-                            className="text-xs text-red-500 mt-2"
+                            bg="none"
+                            fontSize="xs"
+                            color="red.500"
                         >
                             Clear Min Value
                         </Button>
@@ -168,33 +179,34 @@ const Filter = ({ setPage }: Props) => {
                     {tempFilters.maxValue !== null && (
                         <Button
                             onClick={() => clearFilter('maxValue')}
-                            className="text-xs text-red-500 mt-2"
+                            bg="none"
+                            fontSize="xs"
+                            color="red.500"
                         >
                             Clear Max Value
                         </Button>
                     )}
-                </Box>
-
-                <Box className="flex flex-col space-y-2">
-                    <Text className="text-gray-200">Acquired Date</Text>
-                    <Box className="flex gap-3">
-                        <input
+                    <Text color="gray.200">Acquired Date</Text>
+                    <Stack direction="row" gap={2}>
+                        <Input
                             type="date"
                             value={tempFilters.acquiredFrom || ''}
                             onChange={(e) => updateFilter({ 'acquiredFrom': e.target.value })}
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2 w-1/2"
+                            borderColor="gray.600"
                         />
-                        <input
+                        <Input
                             type="date"
                             value={tempFilters.acquiredTo || ''}
                             onChange={(e) => updateFilter({ 'acquiredTo': e.target.value })}
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2 w-1/2"
+                            borderColor="gray.600"
                         />
-                    </Box>
+                    </Stack>
                     {tempFilters.acquiredFrom && (
                         <Button
                             onClick={() => clearFilter('acquiredFrom')}
-                            className="text-xs text-red-500 mt-2"
+                            bg="none"
+                            fontSize="xs"
+                            color="red.500"
                         >
                             Clear Acquired Date From
                         </Button>
@@ -202,114 +214,156 @@ const Filter = ({ setPage }: Props) => {
                     {tempFilters.acquiredTo && (
                         <Button
                             onClick={() => clearFilter('acquiredTo')}
-                            className="text-xs text-red-500 mt-2"
+                            bg="none"
+                            fontSize="xs"
+                            color="red.500"
                         >
                             Clear Acquired Date To
                         </Button>
                     )}
-                </Box>
-            </Box>
+                </Stack>
 
-            <FilterList
-                title="Colors"
-                items={['Black', 'Blue', 'Bronze', 'Crimson', 'Cyan', 'DarkGray', 'ForestGreen', 'Gold', 'Gray', 'Green', 'Lime', 'Orange', 'Pink', 'Purple', 'Red', 'Silver', 'Violet', 'Wheat', 'White', 'Yellow']}
-                selectedItems={tempFilters.colors}
-                toggleSelection={toggleSelection}
-                clearFilter={clearFilter}
-                filterKey="colors"
-                isObject={false}
-            />
+                <FilterList
+                    title="Colors"
+                    items={['Black', 'Blue', 'Bronze', 'Crimson', 'Cyan', 'DarkGray', 'ForestGreen', 'Gold', 'Gray', 'Green', 'Lime', 'Orange', 'Pink', 'Purple', 'Red', 'Silver', 'Violet', 'Wheat', 'White', 'Yellow']}
+                    selectedItems={tempFilters.colors}
+                    toggleSelection={toggleSelection}
+                    clearFilter={clearFilter}
+                    filterKey="colors"
+                    isObject={false}
+                />
 
-            <FilterList
-                title="Conditions"
-                items={['Mint', 'VeryGood', 'Good', 'Acceptable', 'Damaged']}
-                selectedItems={tempFilters.conditions}
-                toggleSelection={toggleSelection}
-                clearFilter={clearFilter}
-                filterKey={"conditions"}
-                isObject={false}
-            />
+                <FilterList
+                    title="Conditions"
+                    items={['Mint', 'VeryGood', 'Good', 'Acceptable', 'Damaged']}
+                    selectedItems={tempFilters.conditions}
+                    toggleSelection={toggleSelection}
+                    clearFilter={clearFilter}
+                    filterKey={"conditions"}
+                    isObject={false}
+                />
 
-            <FilterList
-                title="Categories"
-                items={categories}
-                selectedItems={tempFilters.categories}
-                toggleSelection={toggleSelection}
-                clearFilter={clearFilter}
-                filterKey={"categories"}
-                isObject={true}
-            />
+                <FilterList
+                    title="Categories"
+                    items={categories}
+                    selectedItems={tempFilters.categories}
+                    toggleSelection={toggleSelection}
+                    clearFilter={clearFilter}
+                    filterKey={"categories"}
+                    isObject={true}
+                />
 
-            <FilterList
-                title="Tags"
-                items={tags}
-                selectedItems={tempFilters.tags}
-                toggleSelection={toggleSelection}
-                clearFilter={clearFilter}
-                filterKey={"tags"}
-                isObject={true}
-            />
+                <FilterList
+                    title="Tags"
+                    items={tags}
+                    selectedItems={tempFilters.tags}
+                    toggleSelection={toggleSelection}
+                    clearFilter={clearFilter}
+                    filterKey={"tags"}
+                    isObject={true}
+                />
 
-            <Box className="flex flex-col space-y-2">
-                <Text className="text-gray-200">Patented</Text>
-                <Box className="flex gap-2">
-                    <Box
+                <Text color="gray.200">Patented</Text>
+                <Stack direction="row" gap={2}>
+                    <Button
                         onClick={() => toggleBooleanFilter('isPatented', true)}
-                        className={`cursor-pointer px-3 py-1 rounded-lg text-sm ${tempFilters.isPatented === true
-                            ? 'bg-gray-800 text-white'
-                            : 'bg-gray-600 text-white'
-                            } hover:bg-gray-700 hover:text-white`}
+                        color="white"
+                        bg={tempFilters.isPatented === true
+                            ? "gray.800"
+                            : "none"
+                        }
+                        borderColor="gray.700"
+                        _hover={{
+                            bg: "gray.800"
+                        }}
                     >
                         Patented
-                    </Box>
-                    <Box
+                    </Button>
+                    <Button
                         onClick={() => toggleBooleanFilter('isPatented', false)}
-                        className={`cursor-pointer px-3 py-1 rounded-lg text-sm ${tempFilters.isPatented === false
-                            ? 'bg-gray-800 text-white'
-                            : 'bg-gray-600 text-white'
-                            } hover:bg-gray-700 hover:text-white`}
+                        color="white"
+                        bg={tempFilters.isPatented === false
+                            ? "gray.800"
+                            : "none"
+                        }
+                        borderColor="gray.700"
+                        _hover={{
+                            bg: "gray.800"
+                        }}
                     >
                         Not Patented
-                    </Box>
-                </Box>
+                    </Button>
+                </Stack>
                 {tempFilters.isPatented !== null && (
                     <Button
                         onClick={() => clearFilter('isPatented')}
-                        className="text-xs text-red-500 mt-2"
+                        bg="none"
+                        fontSize="xs"
+                        color="red.500"
                     >
                         Clear Patented
                     </Button>
                 )}
-            </Box>
 
-            <Box className="flex flex-col space-y-4 mt-4">
-                <select
-                    value={tempFilters.sortBy}
-                    onChange={(e) => handleSortChange(e.target.value)}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white p-3"
+                <Box asChild
+                    borderWidth={1}
+                    bg="gray.900"
+                    borderColor="gray.700"
+                    cursor="pointer"
+                    fontSize="sm"
+                    rounded="sm"
+                    p={3}
+                    color="white"
                 >
-                    <option value="">Sort By</option>
-                    <option value="name">Name</option>
-                    <option value="value">Value</option>
-                    <option value="acquireddate">Acquired Date</option>
-                </select>
-
+                    <select
+                        value={tempFilters.sortBy}
+                        onChange={(e) => handleSortChange(e.target.value)}
+                    >
+                        <option value="">Sort By</option>
+                        <option value="name">Name</option>
+                        <option value="value">Value</option>
+                        <option value="acquireddate">Acquired Date</option>
+                    </select>
+                </Box>
                 <Button
                     onClick={() => handleSortOrderToggle()}
-                    className="py-2 px-4 text-sm font-medium bg-zinc-700 text-white rounded-lg hover:bg-zinc-800"
+                    bg="none"
+                    borderColor="gray.700"
+                    _hover={{
+                        bg: "gray.800"
+                    }}
+                    fontSize="sm"
+                    fontWeight="medium"
+                    color="white"
                 >
                     Order ({tempFilters.sortOrder.toUpperCase()})
                 </Button>
-            </Box>
+            </Stack>
 
-            <Button
-                onClick={() => { setPage(1); updateUrlParams() }}
-                className="py-2 px-4 mt-4 bg-zinc-700 text-white rounded-lg hover:bg-zinc-800"
-            >
-                Apply
-            </Button>
-            <Button className="bg-red-500 py-2 px-4 text-white rounded-lg hover:bg-red-600 ml-2" onClick={() => clearFilters()}>Clear All</Button>
-        </Box >
+            <Stack direction="row" gap={2}>
+                <Button
+                    onClick={() => { setPage(1); updateUrlParams() }}
+                    bg="none"
+                    borderColor="gray.700"
+                    _hover={{
+                        bg: "green.600"
+                    }}
+                    color="white"
+                >
+                    Apply
+                </Button>
+                <Button
+                    bg="red.600"
+                    _hover={{
+                        bg: "red.500"
+                    }}
+                    color="white"
+                    onClick={() => clearFilters()}
+                >
+                    Clear All
+                </Button>
+            </Stack>
+        </Box>
     );
 };
 

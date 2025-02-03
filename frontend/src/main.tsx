@@ -1,12 +1,11 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { ChakraProvider, defaultSystem } from '@chakra-ui/react'
-import { Provider } from 'react-redux'
-import { store } from './state/store.ts'
-import './index.css'
-import App from './App.tsx'
-import { fetchCollections } from './state/collection-slice.ts'
-import { api } from './utils/api.ts'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { Provider as ChakraProvider } from './components/ui/provider.tsx';
+import { Provider } from 'react-redux';
+import { store } from './state/store.ts';
+import { fetchCollections } from './state/collection-slice.ts';
+import { api } from './utils/api.ts';
+import App from './App.tsx';
 
 async function checkApiHealth() {
     const maxRetries = 5
@@ -41,7 +40,7 @@ async function start() {
     root.render(
         <StrictMode>
             <Provider store={store}>
-                <ChakraProvider value={defaultSystem}>
+                <ChakraProvider>
                     <App />
                 </ChakraProvider>
             </Provider>

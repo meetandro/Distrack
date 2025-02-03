@@ -1,14 +1,27 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Button, Center, DrawerActionTrigger, DrawerBackdrop, DrawerContent, DrawerHeader, DrawerRoot, DrawerTrigger, SimpleGrid } from '@chakra-ui/react';
-import { CloseButton } from '../ui/close-button';
-import { Checkbox } from '../ui/checkbox';
-import { Tag } from '../../models/tag';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../state/store';
 import { addTagsToCollectible } from '../../state/tag-slice';
-import { Collectible } from '../../models/collectible';
 import { useTags } from '../../hooks/use-tags';
+import { Collectible } from '../../models/collectible';
+import { Tag } from '../../models/tag';
+import { FaCheck, FaTags } from 'react-icons/fa';
+import { CloseButton } from '../ui/close-button';
+import { Checkbox } from '../ui/checkbox';
+import {
+    Box,
+    Button,
+    Center,
+    DrawerActionTrigger,
+    DrawerBackdrop,
+    DrawerContent,
+    DrawerHeader,
+    DrawerRoot,
+    DrawerTrigger,
+    Icon,
+    SimpleGrid
+} from '@chakra-ui/react';
 
 interface Props {
     collectible: Collectible;
@@ -43,22 +56,45 @@ export const ModifyTags = ({ collectible }: Props) => {
                 <DrawerBackdrop />
                 <DrawerTrigger asChild>
                     <Button
-                        className="w-full py-2 mt-6 bg-purple-600 rounded-lg hover:bg-purple-500 transition-all flex items-center justify-center"
+                        bg="teal.600"
+                        _hover={{
+                            bg: "teal.500"
+                        }}
+                        color="white"
+                        title='Modify tags'
                     >
-                        Modify Tags
+                        <Icon as={FaTags} />
                     </Button>
                 </DrawerTrigger>
-                <DrawerContent rounded={'md'} bg={'black'} position={'fixed'} padding={5} className='inset-0 fixed'>
+                <DrawerContent
+                    rounded={'md'}
+                    bg={'gray.900'}
+                    position={'fixed'}
+                    padding={5}
+                    inset={0}
+                >
                     <DrawerHeader>
                         <DrawerActionTrigger asChild>
                             <CloseButton color={'white'} />
                         </DrawerActionTrigger>
                     </DrawerHeader>
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form onSubmit={handleSubmit}>
                         <SimpleGrid gap={5} padding={5}>
                             {tags.map((tag: Tag) => (
-                                <Box key={tag.id} className="flex items-center bg-gray-700 p-2 rounded-md shadow hover:bg-gray-600 transition-colors">
-                                    <Checkbox variant={'outline'} bg={tag.hex} checked={selectedTags.includes(tag.id)} onCheckedChange={() => handleTagChange(tag.id)}>{tag.name}</Checkbox>
+                                <Box
+                                    key={tag.id}
+                                    p={2}
+                                    rounded="md"
+                                    bg="gray.700"
+                                >
+                                    <Checkbox
+                                        checked={selectedTags.includes(tag.id)}
+                                        onCheckedChange={() => handleTagChange(tag.id)}
+                                        variant={'outline'}
+                                        bg={tag.hex}
+                                    >
+                                        {tag.name}
+                                    </Checkbox>
                                 </Box>
                             ))}
                         </SimpleGrid>
@@ -66,10 +102,11 @@ export const ModifyTags = ({ collectible }: Props) => {
                             <Button
                                 type="submit"
                                 padding={5}
-                                bg={'gray'}
-                                _hover={{ background: 'gray.800' }}
+                                bg={'gray.600'}
+                                _hover={{ background: 'gray.700' }}
+                                color="white"
                             >
-                                Apply
+                                <Icon as={FaCheck} />
                             </Button>
                         </Center>
                     </form>
@@ -78,3 +115,4 @@ export const ModifyTags = ({ collectible }: Props) => {
         </Box>
     );
 };
+

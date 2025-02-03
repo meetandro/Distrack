@@ -1,9 +1,9 @@
 import { Route, BrowserRouter, Routes } from 'react-router-dom'
-import { CollectionDetails } from './pages/collection-details'
-import { CollectibleDetails } from './pages/collectible-details'
-import { CollectionSettings } from './pages/collection-settings'
-import { Collections } from './pages/collections'
-import { CollectibleForm } from './pages/collectible-form'
+import { CollectibleDetails } from './pages/collectible-details';
+import { CollectibleForm } from './pages/collectible-form';
+import { CollectionDetails } from './pages/collection-details';
+import { CollectionSettings } from './pages/collection-settings';
+import { Collections } from './pages/collections';
 
 function App() {
     return (
