@@ -7,6 +7,7 @@ import { useCollectibles } from '../../hooks/use-collectibles';
 import { CloseButton } from '../ui/close-button';
 import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from '../ui/pagination';
 import {
+    AbsoluteCenter,
     Box,
     Center,
     DrawerActionTrigger,
@@ -27,7 +28,7 @@ export const Collectibles = () => {
     const pageSize = 10;
     const { collectibles, totalCount, status } = useCollectibles(Number(id), page, pageSize);
 
-    if (status === 'pending') return <Spinner />
+    if (status === 'pending') return <AbsoluteCenter><Spinner /></AbsoluteCenter>
 
     return (
         <Box>

@@ -7,6 +7,7 @@ import { AppDispatch } from '../../state/store';
 import { Collection } from '../../models/collection';
 import { FaCheck, FaTrash } from 'react-icons/fa';
 import {
+    Box,
     Button,
     Editable,
     Stack,
@@ -80,29 +81,31 @@ export const CollectionDetailsCard = ({ collection }: Props) => {
             </form>
 
             {showDeletionModal === true && (
-                <Stack>
-                    <Button
-                        onClick={() => { dispatch(deleteCollection(collection.id)); navigate('/') }}
-                        p={5}
-                        bg="gray.700"
-                        _hover={{
-                            bg: "red.950"
-                        }}
-                    >
-                        Are you sure?
-                        <Text color="red.600" fontWeight="medium">WARNING: This will delete the WHOLE collection.</Text>
-                    </Button>
-                    <Button
-                        onClick={() => setShowDeletionModal(false)}
-                        p={5}
-                        bg="gray.700"
-                        _hover={{
-                            bg: "green.950"
-                        }}
-                    >
-                        <Text color="green.600" fontWeight="medium">Cancel Deletion</Text>
-                    </Button>
-                </Stack>
+                <Box>
+                    <Text marginBottom={2}>Delete the whole collection?</Text>
+                    <Stack direction="row" display="flex" flexWrap="wrap">
+                        <Button
+                            onClick={() => { dispatch(deleteCollection(collection.id)); navigate('/') }}
+                            p={5}
+                            bg="gray.700"
+                            _hover={{
+                                bg: "red.900"
+                            }}
+                        >
+                            <Text color="red.600" fontWeight="medium">Confirm</Text>
+                        </Button>
+                        <Button
+                            onClick={() => setShowDeletionModal(false)}
+                            p={5}
+                            bg="gray.700"
+                            _hover={{
+                                bg: "green.900"
+                            }}
+                        >
+                            <Text color="green.600" fontWeight="medium">Cancel</Text>
+                        </Button>
+                    </Stack>
+                </Box>
             )}
         </Stack>
     );

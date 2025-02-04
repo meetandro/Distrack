@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaPen, FaPlus, FaTrash } from 'react-icons/fa';
 import { CategoryForm } from './category-form';
 import { useDispatch } from 'react-redux';
@@ -19,19 +19,23 @@ import {
     Icon
 } from '@chakra-ui/react';
 
-
 export const Categories = () => {
     const categories = useCategories();
     const dispatch = useDispatch<AppDispatch>();
 
-    const [openCreate, setOpenCreate] = useState<boolean>(false);
-    const [openUpdate, setOpenUpdate] = useState<boolean>(false);
+    const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 
-    const handleEditClick = (category: Category) => {
+    const handleEditDialog = (category: Category) => {
         setSelectedCategory(category);
-        setOpenUpdate(true);
+        setIsDialogOpen(true);
     };
+
+    useEffect(() => {
+        if (!isDialogOpen) {
+            setSelectedCategory(null)
+        }
+    }, [isDialogOpen])
 
     return (
         <Box
@@ -61,34 +65,17 @@ export const Categories = () => {
                             display="flex"
                             justifyContent="flex-end"
                         >
-                            <DialogRoot open={openUpdate} onOpenChange={(e) => setOpenUpdate(e.open)}>
-                                <DialogTrigger asChild>
-                                    <Button
-                                        onClick={() => handleEditClick(category)}
-                                        bg="gray.500"
-                                        _hover={{
-                                            bg: "green.500"
-                                        }}
-                                        marginRight={5}
-                                        color="white"
-                                    >
-                                        <Icon as={FaPen} />
-                                    </Button>
-                                </DialogTrigger>
-                                <DialogContent
-                                    position="fixed"
-                                    top={0}
-                                    left={0}
-                                    right={0}
-                                    bg="gray.800"
-                                    borderWidth={2}
-                                    borderColor="gray.600"
-                                >
-                                    <DialogBody>
-                                        {selectedCategory && <CategoryForm existingCategory={selectedCategory} onClose={() => setOpenUpdate(false)} />}
-                                    </DialogBody>
-                                </DialogContent>
-                            </DialogRoot>
+                            <Button
+                                onClick={() => handleEditDialog(category)}
+                                bg="gray.500"
+                                _hover={{
+                                    bg: "green.500"
+                                }}
+                                marginRight={5}
+                                color="white"
+                            >
+                                <Icon as={FaPen} />
+                            </Button>
                             <Button
                                 onClick={() => dispatch(deleteCategory(category.id))}
                                 bg="red.500"
@@ -107,7 +94,7 @@ export const Categories = () => {
                 )}
             </SimpleGrid>
 
-            <DialogRoot open={openCreate} onOpenChange={(e) => setOpenCreate(e.open)}>
+            <DialogRoot open={isDialogOpen} onOpenChange={(e) => setIsDialogOpen(e.open)}>
                 <DialogTrigger asChild>
                     <Button
                         bg="gray.600"
@@ -132,7 +119,7 @@ export const Categories = () => {
                     bg="gray.800"
                 >
                     <DialogBody>
-                        <CategoryForm onClose={() => setOpenCreate(false)} />
+                        <CategoryForm existingCategory={selectedCategory} onClose={() => setIsDialogOpen(false)} />
                     </DialogBody>
                 </DialogContent>
             </DialogRoot>

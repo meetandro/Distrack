@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../state/store';
 import { deleteTag } from '../../state/tag-slice';
 import { useTags } from '../../hooks/use-tags';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaPen, FaPlus, FaTrash } from 'react-icons/fa';
 import { TagForm } from './tag-form';
 import {
@@ -27,14 +27,19 @@ export const Tags = () => {
     const tags = useTags(Number(id));
     const dispatch = useDispatch<AppDispatch>();
 
-    const [openCreate, setOpenCreate] = useState<boolean>(false);
-    const [openUpdate, setOpenUpdate] = useState<boolean>(false);
+    const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
     const [selectedTag, setSelectedTag] = useState<Tag | null>(null);
 
     const handleEditClick = (tag: Tag) => {
         setSelectedTag(tag);
-        setOpenUpdate(true);
+        setIsDialogOpen(true);
     };
+
+    useEffect(() => {
+        if (!isDialogOpen) {
+            setSelectedTag(null);
+        }
+    }, [isDialogOpen])
 
     return (
         <Box
@@ -66,31 +71,14 @@ export const Tags = () => {
                             display={'flex'}
                             justifyContent={'flex-end'}
                         >
-                            <DialogRoot open={openUpdate} onOpenChange={(e) => setOpenUpdate(e.open)}>
-                                <DialogTrigger asChild>
-                                    <Button
-                                        onClick={() => handleEditClick(tag)}
-                                        bg={'gray.500'}
-                                        _hover={{ bg: 'green.500' }}
-                                        marginRight={5}
-                                    >
-                                        <Icon as={FaPen} color="white" />
-                                    </Button>
-                                </DialogTrigger>
-                                <DialogContent
-                                    position="fixed"
-                                    top={0}
-                                    left={0}
-                                    right={0}
-                                    bg="gray.800"
-                                    borderWidth={2}
-                                    borderColor="gray.600"
-                                >
-                                    <DialogBody>
-                                        {selectedTag && <TagForm existingTag={selectedTag} onClose={() => setOpenUpdate(false)} />}
-                                    </DialogBody>
-                                </DialogContent>
-                            </DialogRoot>
+                            <Button
+                                onClick={() => handleEditClick(tag)}
+                                bg={'gray.500'}
+                                _hover={{ bg: 'green.500' }}
+                                marginRight={5}
+                            >
+                                <Icon as={FaPen} color="white" />
+                            </Button>
                             <Button
                                 onClick={() => dispatch(deleteTag(tag.id))}
                                 bg="red.500"
@@ -108,7 +96,7 @@ export const Tags = () => {
                 )}
             </SimpleGrid>
 
-            <DialogRoot open={openCreate} onOpenChange={(e) => setOpenCreate(e.open)}>
+            <DialogRoot open={isDialogOpen} onOpenChange={(e) => setIsDialogOpen(e.open)}>
                 <DialogTrigger asChild>
                     <Button
                         p={4}
@@ -132,7 +120,7 @@ export const Tags = () => {
                     borderColor="gray.600"
                 >
                     <DialogBody>
-                        <TagForm onClose={() => setOpenCreate(false)} />
+                        <TagForm existingTag={selectedTag} onClose={() => setIsDialogOpen(false)} />
                     </DialogBody>
                 </DialogContent>
             </DialogRoot>

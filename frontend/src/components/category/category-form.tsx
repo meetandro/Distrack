@@ -29,10 +29,15 @@ export const CategoryForm = ({ existingCategory, onClose }: Props) => {
     });
 
     const onSubmit = async (data: Category) => {
-        if (existingCategory) dispatch(updateCategory(data))
+        if (existingCategory) {
+            dispatch(updateCategory(data))
+        }
         else dispatch(createCategory(data))
 
-        reset();
+        reset({
+            id: existingCategory?.id ?? 0,
+            name: existingCategory?.name ?? "",
+        });
         onClose();
     };
 
@@ -48,32 +53,32 @@ export const CategoryForm = ({ existingCategory, onClose }: Props) => {
                         padding={2}
                     />
                 </Field>
-            </Stack>
-            <Stack direction="row" marginTop={4} gap={2}>
-                <Button
-                    type="submit"
-                    title="Save"
-                    bg="gray.600"
-                    _hover={{
-                        bg: "gray.700"
-                    }}
-                    rounded="lg"
-                    color="white"
-                >
-                    <Icon as={FaCheck} />
-                </Button>
-                <Button
-                    onClick={() => onClose()}
-                    title="Cancel"
-                    bg="gray.600"
-                    _hover={{
-                        bg: "gray.700"
-                    }}
-                    rounded="lg"
-                    color="white"
-                >
-                    <Icon as={FaXmark} />
-                </Button>
+                <Stack direction="row" marginTop={4} gap={2}>
+                    <Button
+                        type="submit"
+                        title="Save"
+                        bg="gray.600"
+                        _hover={{
+                            bg: "gray.700"
+                        }}
+                        rounded="lg"
+                        color="white"
+                    >
+                        <Icon as={FaCheck} />
+                    </Button>
+                    <Button
+                        onClick={() => onClose()}
+                        title="Cancel"
+                        bg="gray.600"
+                        _hover={{
+                            bg: "gray.700"
+                        }}
+                        rounded="lg"
+                        color="white"
+                    >
+                        <Icon as={FaXmark} />
+                    </Button>
+                </Stack>
             </Stack>
         </form>
     );

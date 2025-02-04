@@ -37,7 +37,7 @@ export const ImageSlider = ({ images, collectionId, collectibleId }: { images: s
 
             {images.length > 1 && (
                 <Float placement="middle-center">
-                    <Stack direction="row" gap={16} pointerEvents="none">
+                    <Stack direction="row" gap={20} pointerEvents="none">
                         <Button
                             onClick={handlePrev}
                             rounded="sm"
@@ -46,8 +46,9 @@ export const ImageSlider = ({ images, collectionId, collectibleId }: { images: s
                                 bg: "gray.900",
                                 opacity: 1
                             }}
-                            opacity={0.75}
+                            opacity={0.25}
                             pointerEvents="auto"
+                            color="white"
                         >
                             ❮
                         </Button>
@@ -59,8 +60,9 @@ export const ImageSlider = ({ images, collectionId, collectibleId }: { images: s
                                 bg: "gray.900",
                                 opacity: 1
                             }}
-                            opacity={0.75}
+                            opacity={0.25}
                             pointerEvents="auto"
+                            color="white"
                         >
                             ❯
                         </Button>
