@@ -42,7 +42,6 @@ export const Collectibles = () => {
                 </DrawerTrigger>
                 <DrawerContent
                     position="fixed"
-                    rounded="md"
                     bg="gray.900"
                 >
                     <DrawerBody>

@@ -16,8 +16,8 @@ const initialState: CollectionState = {
 export const fetchCollections = createAsyncThunk(
     "collections/fetchCollections",
     async () => {
-        const response = await api.get(`/collections`);
-        return response.data;
+        const response = await api.get('/collections')
+        return response.data
     }
 )
 

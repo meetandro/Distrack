@@ -57,7 +57,7 @@ export const CollectibleGrid = ({ collectionId, collectibles }: Props) => {
                                 color="gray.400"
                                 fontSize="sm"
                             >
-                                {collectible.description.length > 300 ? collectible.description.substring(0, 300) + "..." : collectible.description}
+                                {collectible.description.length > 100 ? collectible.description.substring(0, 100) + "..." : collectible.description}
                             </Text>
 
                             <Stack gap={1}>

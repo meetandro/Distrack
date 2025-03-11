@@ -25,18 +25,20 @@ export const CategoryForm = ({ existingCategory, onClose }: Props) => {
         defaultValues: {
             id: existingCategory?.id ?? 0,
             name: existingCategory?.name ?? "",
+            collectibles: existingCategory?.collectibles ?? []
         }
     });
 
     const onSubmit = async (data: Category) => {
         if (existingCategory) {
-            dispatch(updateCategory(data))
+            dispatch(updateCategory({ ...data, collectibles: existingCategory.collectibles }))
         }
         else dispatch(createCategory(data))
 
         reset({
             id: existingCategory?.id ?? 0,
             name: existingCategory?.name ?? "",
+            collectibles: existingCategory?.collectibles ?? [],
         });
         onClose();
     };

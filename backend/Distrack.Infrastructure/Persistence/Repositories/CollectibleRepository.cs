@@ -11,6 +11,7 @@ namespace Distrack.Infrastructure.Persistence.Repositories
             var collectible = await context
                 .Collectibles
                 .Include(c => c.CollectibleTags)
+                .ThenInclude(ct => ct.Tag)
                 .Include(c => c.Images)
                 .FirstOrDefaultAsync(c => c.Id == id);
             return collectible;

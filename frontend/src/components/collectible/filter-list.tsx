@@ -33,7 +33,7 @@ export const FilterList = ({ title, items, selectedItems, toggleSelection, clear
                 flexWrap="wrap"
                 gap={2}
             >
-                {visibleItems.map((item) => {
+                {visibleItems.map((item: any) => {
                     const itemKey = isObject ? item.id.toString() : item;
                     const itemName = isObject ? item.name : item;
 

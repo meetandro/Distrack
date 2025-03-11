@@ -8,7 +8,7 @@ namespace Distrack.Infrastructure.Persistence.Repositories
     {
         public async Task<IEnumerable<Category>> GetAllAsync()
         {
-            var categories = await context.Categories.ToListAsync();
+            var categories = await context.Categories.Include(c => c.Collectibles).ToListAsync();
             return categories;
         }
 

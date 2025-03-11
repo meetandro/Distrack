@@ -26,7 +26,7 @@ export const Collections = () => {
     return (
         <Center>
             <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} gap={8}
-                maxW="10/12"
+                width="10/12"
                 py={10}
                 px={5}
             >

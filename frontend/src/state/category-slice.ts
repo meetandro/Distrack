@@ -33,7 +33,7 @@ export const updateCategory = createAsyncThunk(
     "categories/updateCategory",
     async (data: Partial<Category>) => {
         const response = await api.put(`/categories/${data.id}`, data);
-        return { ...response.data, id: data.id } as Category;
+        return { ...response.data, id: data.id, collectibles: data.collectibles } as Category;
     }
 )
 

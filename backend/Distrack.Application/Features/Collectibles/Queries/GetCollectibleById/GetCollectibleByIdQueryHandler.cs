@@ -26,7 +26,11 @@ namespace Distrack.Application.Features.Collectibles.Queries.GetCollectibleById
                 collectible.CategoryId,
                 collectible.CollectionId,
                 collectible.Images?.Select(i => i.Url).ToList() ?? [],
-                collectible.CollectibleTags?.Select(c => c.TagId).ToList() ?? []
+                collectible.CollectibleTags.Select(ct => new TagResponse(
+                    ct.Tag.Id,
+                    ct.Tag.Name,
+                    ct.Tag.Hex
+                ))
             );
         }
     }

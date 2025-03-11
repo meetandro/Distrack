@@ -13,7 +13,7 @@ namespace Distrack.Application.Features.Categories.Queries.GetAllCategories
         {
             var categories = await categoryRepository.GetAllAsync();
 
-            return categories.Select(c => new GetAllCategoriesResponse(c.Id, c.Name));
+            return categories.Select(c => new GetAllCategoriesResponse(c.Id, c.Name, c.Collectibles.Select(cc => cc.Id).ToList() ?? []));
         }
     }
 }

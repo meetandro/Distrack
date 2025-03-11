@@ -25,11 +25,21 @@ export const Categories = () => {
 
     const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+    const [error, setError] = useState<string | null>(null)
 
     const handleEditDialog = (category: Category) => {
         setSelectedCategory(category);
         setIsDialogOpen(true);
     };
+
+    const handleDelete = (category: Category) => {
+        if (category.collectibles.length > 0) {
+            setError('Category has associated collectibles with it. Either remove the associations or delete the collectibles.')
+        }
+        else {
+            dispatch(deleteCategory(category.id))
+        }
+    }
 
     useEffect(() => {
         if (!isDialogOpen) {
@@ -77,7 +87,7 @@ export const Categories = () => {
                                 <Icon as={FaPen} />
                             </Button>
                             <Button
-                                onClick={() => dispatch(deleteCategory(category.id))}
+                                onClick={() => handleDelete(category)}
                                 bg="red.500"
                                 _hover={{
                                     bg: "red.400"
@@ -92,6 +102,7 @@ export const Categories = () => {
                 {categories.length === 0 && (
                     <Text>No Categories</Text>
                 )}
+                <Text color={"red.500"}>{error}</Text>
             </SimpleGrid>
 
             <DialogRoot open={isDialogOpen} onOpenChange={(e) => setIsDialogOpen(e.open)}>

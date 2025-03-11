@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../state/store';
 import { deleteCollectible, updateCollectible } from '../state/collectible-slice';
-import { useCollectibles } from '../hooks/use-collectibles';
 import { useCategories } from '../hooks/use-categories';
 import { mapColor, mapCondition } from '../utils/enum-mapper';
 import { useForm } from 'react-hook-form';
@@ -11,23 +10,24 @@ import { Collectible } from '../models/collectible';
 import { ModifyTags } from '../components/tag/modify-tags';
 import { Field } from '../components/ui/field';
 import { FaCheck, FaRegEdit, FaTrash } from 'react-icons/fa';
-import { IoMdExit } from 'react-icons/io';
 import { FaXmark } from 'react-icons/fa6';
 import {
+    AbsoluteCenter,
     Box,
     Button,
     Float,
     Icon,
     Image,
     Input,
+    Spinner,
     Stack,
     Text
 } from '@chakra-ui/react';
+import { api } from '../utils/api';
 
 export const CollectibleDetails = () => {
     const { id, collectibleId } = useParams<{ id: string, collectibleId: string }>();
-    const { collectibles } = useCollectibles(Number(id), 1, 10);
-    const collectible = collectibles.find(collectible => collectible.id == Number(collectibleId))
+    const [collectible, setCollectible] = useState<Collectible>();
     const categories = useCategories();
     const [images, setImages] = useState<(File | string)[]>(
         collectible?.images ?? []
@@ -64,12 +64,23 @@ export const CollectibleDetails = () => {
     }
 
     useEffect(() => {
+        async function fetchData() {
+            const response = await api.get(
+                `/collectibles/${collectibleId}`
+            );
+            setCollectible(response.data);
+        };
+        fetchData();
+    }, [collectibleId]);
+
+    useEffect(() => {
         if (collectible) {
             setChecked(collectible.isPatented || false)
+            setImages(collectible.images)
         }
     }, [collectible])
 
-    if (!collectible || !collectible.tags) return <p>Loading...</p>;
+    if (!collectible || !collectible.tags) return <AbsoluteCenter><Spinner /></AbsoluteCenter>;
 
     return (
         <Box p={5} minWidth={'64'}>
@@ -141,33 +152,44 @@ export const CollectibleDetails = () => {
                         )}
                     </Field>
 
-                    <Field fontSize={'4xl'}>
-                        <Input
-                            {...register("name")}
-                            defaultValue={collectible.name}
-                            _disabled={{
-                                color: 'white',
-                                opacity: 1,
-                            }}
-                            type="text"
-                            disabled={!isEditing}
-                            border="none"
-                        />
-                    </Field>
+                    {!isEditing ? (
+                        <Text fontSize={"4xl"} marginBottom={5}>{collectible.name}</Text>
+                    ) :
+                        <Field>
+                            <Input
+                                {...register("name")}
+                                defaultValue={collectible.name}
+                                fontSize={'3xl'}
+                                marginBottom={5}
+                                padding={0}
+                                _disabled={{
+                                    color: 'white',
+                                    opacity: 1,
+                                }}
+                                type="text"
+                                disabled={!isEditing}
+                                border="none"
+                            />
+                        </Field>
+                    }
 
-                    <Field>
-                        <Input
-                            {...register("description")}
-                            defaultValue={collectible.description}
-                            _disabled={{
-                                color: 'white',
-                                opacity: 1,
-                            }}
-                            type="text"
-                            disabled={!isEditing}
-                            border="none"
-                        />
-                    </Field>
+                    {isEditing && (
+                        <Field>
+                            <textarea
+                                style={{
+                                    background: 'none',
+                                    width: '100%'
+                                }}
+                                {...register("description")}
+                                defaultValue={collectible.description}
+                                disabled={!isEditing}
+                            />
+                        </Field>
+                    )}
+
+                    {!isEditing && (
+                        <p>{collectible.description}</p>
+                    )}
 
                     {isEditing && (
                         <Stack direction={'row'}>
@@ -200,7 +222,7 @@ export const CollectibleDetails = () => {
                         </Stack>
                     )}
 
-                    {!isEditing && (
+                    {!isEditing && collectible.value !== 0 && (
                         <Stack>
                             <Text p={2} fontSize={'3xl'}>{collectible.value} {collectible.currency}</Text>
                         </Stack>
@@ -210,7 +232,9 @@ export const CollectibleDetails = () => {
                         <Input
                             {...register("acquiredDate")}
                             defaultValue={collectible.acquiredDate.slice(0, 10)}
+                            padding={0}
                             _disabled={{
+                                cursor: 'text',
                                 color: 'white',
                                 opacity: 1,
                             }}
@@ -330,12 +354,6 @@ export const CollectibleDetails = () => {
                     >
                         {isEditing ? <Icon as={FaXmark} /> : <Icon as={FaRegEdit} />}
                     </Button>
-
-                    <Link to={`/collections/${collectible.collectionId}`}>
-                        <Button bg={'gray.700'} _hover={{ bg: 'gray.600' }} color="white" title='Back to collection'>
-                            <Icon as={IoMdExit} />
-                        </Button>
-                    </Link>
 
                     <Button
                         onClick={() => { dispatch(deleteCollectible(collectible.id)); navigate(`/collections/${collectible?.collectionId}`); }}

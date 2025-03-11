@@ -12,6 +12,7 @@ import {
     Stack,
     Text
 } from "@chakra-ui/react";
+import { Filters } from "../../models/filters";
 
 interface Props {
     setPage: React.Dispatch<React.SetStateAction<number>>;
@@ -71,22 +72,20 @@ const Filter = ({ setPage }: Props) => {
         })
     }
 
-    const toggleSelection = (key: string, value: string) => {
+    const toggleSelection = (key: keyof Filters, value: string) => {
         const currentSelection = tempFilters[key] || [];
 
-        const updatedSelection = currentSelection.includes(value)
-            ? currentSelection.filter((item: string) => item !== value) // Remove if already selected
-            : [...currentSelection, value]; // Add if not selected
+        const updatedSelection = Array.isArray(currentSelection)
+            ? (currentSelection.includes(value)
+                ? currentSelection.filter((item) => item !== value)
+                : [...currentSelection, value])
+            : currentSelection;
 
         updateFilter({ [key]: updatedSelection });
     };
 
-    const toggleBooleanFilter = (key: string, value: boolean) => {
-        if (tempFilters[key] === value) {
-            updateFilter({ [key]: null });
-        } else {
-            updateFilter({ [key]: value });
-        }
+    const toggleBooleanFilter = (key: "isPatented", value: boolean) => {
+        updateFilter({ [key]: value ? "true" : "false" });
     };
 
     const updateUrlParams = () => {
@@ -102,7 +101,9 @@ const Filter = ({ setPage }: Props) => {
             }
         });
 
-        setSearchParams(params);
+        if (searchParams !== null) {
+            setSearchParams(params);
+        }
     };
 
     return (
@@ -118,7 +119,7 @@ const Filter = ({ setPage }: Props) => {
                     <Input
                         type="text"
                         placeholder="Search"
-                        value={tempFilters.searchQuery}
+                        value={tempFilters.searchQuery ?? ''}
                         onChange={(e) => updateFilter({ 'searchQuery': e.target.value })}
                         borderColor="gray.600"
                     />
@@ -135,7 +136,7 @@ const Filter = ({ setPage }: Props) => {
                     <Input
                         type="text"
                         placeholder="Currency"
-                        value={tempFilters.currency}
+                        value={tempFilters.currency ?? ''}
                         onChange={(e) => updateFilter({ 'currency': e.target.value })}
                         borderColor="gray.600"
                     />
@@ -268,7 +269,7 @@ const Filter = ({ setPage }: Props) => {
                     <Button
                         onClick={() => toggleBooleanFilter('isPatented', true)}
                         color="white"
-                        bg={tempFilters.isPatented === true
+                        bg={tempFilters.isPatented?.toString() === "true"
                             ? "gray.800"
                             : "none"
                         }
@@ -282,7 +283,7 @@ const Filter = ({ setPage }: Props) => {
                     <Button
                         onClick={() => toggleBooleanFilter('isPatented', false)}
                         color="white"
-                        bg={tempFilters.isPatented === false
+                        bg={tempFilters.isPatented?.toString() === "false"
                             ? "gray.800"
                             : "none"
                         }
@@ -316,7 +317,7 @@ const Filter = ({ setPage }: Props) => {
                     color="white"
                 >
                     <select
-                        value={tempFilters.sortBy}
+                        value={tempFilters.sortBy ?? ''}
                         onChange={(e) => handleSortChange(e.target.value)}
                     >
                         <option value="">Sort By</option>
@@ -336,7 +337,7 @@ const Filter = ({ setPage }: Props) => {
                     fontWeight="medium"
                     color="white"
                 >
-                    Order ({tempFilters.sortOrder.toUpperCase()})
+                    Order ({tempFilters.sortOrder?.toUpperCase()})
                 </Button>
             </Stack>
 

@@ -12,9 +12,11 @@ namespace Distrack.Application.Features.Collectibles.Queries.GetCollectibleById
         Condition? Condition,
         DateTime? AcquiredDate,
         bool? IsPatented,
-        int CategoryId,
-        int CollectionId,
-        List<string> ImageUrls,
-        List<int> Tags
+        int collectionId,
+        int categoryId,
+        IEnumerable<string> Images,
+        IEnumerable<TagResponse> Tags
     );
+
+    public sealed record TagResponse(int Id, string Name, string Hex);
 }
