@@ -226,7 +226,7 @@ const Filter = ({ setPage }: Props) => {
 
                 <FilterList
                     title="Colors"
-                    items={['Black', 'Blue', 'Bronze', 'Crimson', 'Cyan', 'DarkGray', 'ForestGreen', 'Gold', 'Gray', 'Green', 'Lime', 'Orange', 'Pink', 'Purple', 'Red', 'Silver', 'Violet', 'Wheat', 'White', 'Yellow']}
+                    items={['Black', 'Blue', 'Bronze', 'Brown', 'Crimson', 'Cyan', 'DarkGray', 'ForestGreen', 'Gold', 'Gray', 'Green', 'Lime', 'Multicolored', 'Orange', 'Pink', 'Purple', 'Red', 'Silver', 'Violet', 'Wheat', 'White', 'Yellow']}
                     selectedItems={tempFilters.colors}
                     toggleSelection={toggleSelection}
                     clearFilter={clearFilter}

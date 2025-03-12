@@ -9,8 +9,7 @@ namespace Distrack.Infrastructure.Persistence.Repositories
         public async Task<Collectible?> GetByIdAsync(int id)
         {
             var collectible = await context
-                .Collectibles
-                .Include(c => c.CollectibleTags)
+                .Collectibles.Include(c => c.CollectibleTags)
                 .ThenInclude(ct => ct.Tag)
                 .Include(c => c.Images)
                 .FirstOrDefaultAsync(c => c.Id == id);

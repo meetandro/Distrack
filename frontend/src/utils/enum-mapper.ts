@@ -1,6 +1,6 @@
 export const mapColor = (color: number) => [
-    'Black', 'Blue', 'Bronze', 'Crimson', 'Cyan', 'Dark Gray',
-    'Forest Green', 'Gold', 'Gray', 'Green', 'Lime', 'Orange',
+    'Black', 'Blue', 'Bronze', 'Brown', 'Crimson', 'Cyan', 'Dark Gray',
+    'Forest Green', 'Gold', 'Gray', 'Green', 'Lime', 'Multicolored', 'Orange',
     'Pink', 'Purple', 'Red', 'Silver', 'Violet', 'Wheat', 'White', 'Yellow'
 ][color] || 'Unknown';
 

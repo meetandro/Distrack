@@ -54,7 +54,7 @@ export const CollectibleForm = () => {
     };
 
     const onSubmit = async (data: Collectible) => {
-        if (data.categoryId === 0) {
+        if (data.categoryId == 0) {
             data.categoryId = categories[0].id;
         }
         dispatch(createCollectible({ data: data, images: images }))
@@ -119,23 +119,25 @@ export const CollectibleForm = () => {
                                     <option value="0">Black</option>
                                     <option value="1">Blue</option>
                                     <option value="2">Bronze</option>
-                                    <option value="3">Crimson</option>
-                                    <option value="4">Cyan</option>
-                                    <option value="5">Dark Gray</option>
-                                    <option value="6">Forest Green</option>
-                                    <option value="7">Gold</option>
-                                    <option value="8">Gray</option>
-                                    <option value="9">Green</option>
-                                    <option value="10">Lime</option>
-                                    <option value="11">Orange</option>
-                                    <option value="12">Pink</option>
-                                    <option value="13">Purple</option>
-                                    <option value="14">Red</option>
-                                    <option value="15">Silver</option>
-                                    <option value="16">Violet</option>
-                                    <option value="17">Wheat</option>
-                                    <option value="18">White</option>
-                                    <option value="19">Yellow</option>
+                                    <option value="3">Brown</option>
+                                    <option value="4">Crimson</option>
+                                    <option value="5">Cyan</option>
+                                    <option value="6">Dark Gray</option>
+                                    <option value="7">Forest Green</option>
+                                    <option value="8">Gold</option>
+                                    <option value="9">Gray</option>
+                                    <option value="10">Green</option>
+                                    <option value="11">Lime</option>
+                                    <option value="12">Multicolored</option>
+                                    <option value="13">Orange</option>
+                                    <option value="14">Pink</option>
+                                    <option value="15">Purple</option>
+                                    <option value="16">Red</option>
+                                    <option value="17">Silver</option>
+                                    <option value="18">Violet</option>
+                                    <option value="19">Wheat</option>
+                                    <option value="20">White</option>
+                                    <option value="21">Yellow</option>
                                 </select>
                             </Field>
                             <Field label="Category" width={'full'} required>

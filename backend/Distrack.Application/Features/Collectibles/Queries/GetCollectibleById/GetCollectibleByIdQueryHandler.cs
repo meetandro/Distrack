@@ -23,8 +23,8 @@ namespace Distrack.Application.Features.Collectibles.Queries.GetCollectibleById
                 collectible.Condition,
                 collectible.AcquiredDate,
                 collectible.IsPatented,
-                collectible.CategoryId,
                 collectible.CollectionId,
+                collectible.CategoryId,
                 collectible.Images?.Select(i => i.Url).ToList() ?? [],
                 collectible.CollectibleTags.Select(ct => new TagResponse(
                     ct.Tag.Id,

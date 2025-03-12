@@ -17,20 +17,20 @@ builder.Services.AddCors(options =>
         name: "AllowSpecificOrigin",
         policy =>
         {
-            policy
-                .WithOrigins("http://localhost:3000")
-                .AllowAnyHeader()
-                .AllowAnyMethod();
+            policy.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
         }
     );
 });
 
 builder.Services.AddApplication();
-builder.Services.AddInfrastructure(builder.Configuration, webRootPath =>
-{
-    var env = webRootPath.GetRequiredService<IWebHostEnvironment>();
-    return env.WebRootPath;
-});
+builder.Services.AddInfrastructure(
+    builder.Configuration,
+    webRootPath =>
+    {
+        var env = webRootPath.GetRequiredService<IWebHostEnvironment>();
+        return env.WebRootPath;
+    }
+);
 
 builder.Services.AddHealthChecks();
 

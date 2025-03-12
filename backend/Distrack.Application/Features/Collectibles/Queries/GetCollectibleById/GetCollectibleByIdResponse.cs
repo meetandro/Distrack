@@ -12,8 +12,8 @@ namespace Distrack.Application.Features.Collectibles.Queries.GetCollectibleById
         Condition? Condition,
         DateTime? AcquiredDate,
         bool? IsPatented,
-        int collectionId,
-        int categoryId,
+        int CollectionId,
+        int CategoryId,
         IEnumerable<string> Images,
         IEnumerable<TagResponse> Tags
     );
